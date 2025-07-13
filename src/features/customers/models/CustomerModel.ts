@@ -1,4 +1,4 @@
-export type ICustomerModel = {
+export type CustomerModel = {
     id: string;
     name: string;
     surname: string;

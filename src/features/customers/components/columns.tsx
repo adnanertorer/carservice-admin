@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import type { ICustomerModel } from "../models/ICustomerModel";
+import type { CustomerModel } from "../models/CustomerModel";
 
-export const columns: ColumnDef<ICustomerModel>[] = [
+export const columns: ColumnDef<CustomerModel>[] = [
     {
       id: "select",
       header: ({ table }) => (

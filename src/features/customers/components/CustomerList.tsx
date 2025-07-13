@@ -34,11 +34,11 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { GenericService } from "@/core/services/GenericService"
-import type { ICustomerModel } from "../models/ICustomerModel"
-import VaulDrawer from "./create-drawer"
+import {CreateCustomerDrawer} from "./create-drawer"
+import type { CustomerModel } from "../models/CustomerModel"
 
 export function CustomerList() {
-  const data: ICustomerModel[] = [];
+  const data: CustomerModel[] = [];
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -46,20 +46,22 @@ export function CustomerList() {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
-  const [customers, setCustomers] = React.useState<ICustomerModel[]>(data);
+  const [customers, setCustomers] = React.useState<CustomerModel[]>(data);
 
-  var customerService = new GenericService<ICustomerModel>("customer")
+  const customerService = React.useMemo(() => new GenericService<CustomerModel>("customer"), []);
+
+  const fetchCustomers = React.useCallback(async () => {
+    const res = await customerService.getByFilter(undefined, undefined, 0, 50, "", false);
+    if(res.succeeded && res.data?.items && res.data?.items.length > 0){
+      setCustomers(res.data?.items);
+    }
+  }, [customerService]);
 
   React.useEffect(()=>{
-    customerService.getByFilter(undefined, undefined, 0, 50, "", false).then(res =>{
-      if(res.succeeded && res.data?.items && res.data?.items.length > 0){
-        setCustomers(res.data?.items);
-      }
-    })
-    
-  },[]);
+    fetchCustomers();
+  }, [fetchCustomers]);
 
-  const table = useReactTable<ICustomerModel>({
+  const table = useReactTable<CustomerModel>({
     data: customers,
     columns,
     onSortingChange: setSorting,
@@ -117,7 +119,7 @@ export function CustomerList() {
         </DropdownMenu>
       </div>
       <div className="rounded-md border">
-        <div className="p-2"><VaulDrawer /></div>
+        <div className="p-2"><CreateCustomerDrawer onCustomerCreated={fetchCustomers} /></div>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
