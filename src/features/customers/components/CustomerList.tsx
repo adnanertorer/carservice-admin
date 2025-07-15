@@ -47,7 +47,6 @@ export function CustomerList() {
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
   const [customers, setCustomers] = React.useState<CustomerModel[]>(data);
-
   const customerService = React.useMemo(() => new GenericService<CustomerModel>("customer"), []);
 
   const fetchCustomers = React.useCallback(async () => {
@@ -57,13 +56,15 @@ export function CustomerList() {
     }
   }, [customerService]);
 
+  const customerColumns = React.useMemo(() => columns(fetchCustomers), [fetchCustomers]);
+
   React.useEffect(()=>{
     fetchCustomers();
   }, [fetchCustomers]);
 
   const table = useReactTable<CustomerModel>({
     data: customers,
-    columns,
+    columns: customerColumns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -119,7 +120,9 @@ export function CustomerList() {
         </DropdownMenu>
       </div>
       <div className="rounded-md border">
-        <div className="p-2"><CreateCustomerDrawer onCustomerCreated={fetchCustomers} /></div>
+        <div className="p-2">
+          <CreateCustomerDrawer onCustomerCreated={fetchCustomers} />
+        </div>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -159,7 +162,7 @@ export function CustomerList() {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={customerColumns.length}
                   className="h-24 text-center"
                 >
                   No results.
