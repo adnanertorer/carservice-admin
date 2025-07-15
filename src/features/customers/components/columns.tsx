@@ -5,7 +5,7 @@ import type { CustomerModel } from "../models/CustomerModel";
 
 import type { Column } from "@tanstack/react-table";
 import { EditCustomerDrawer } from "./edit-drawer";
-import { IconRowRemove } from "@tabler/icons-react";
+import { IconCar, IconReportMoney, IconRowRemove } from "@tabler/icons-react";
 import { toast } from "react-toastify";
 import type { GenericService } from "@/core/services/GenericService";
 
@@ -47,7 +47,7 @@ export const columns = (service: GenericService<CustomerModel>, onCustomerUpdate
     accessorKey: "address",
     header: ({ column }) => sortableHeader("Adres", column),
     cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("address")}</div>
+      row.getValue("address")
     ),
   },
   {
@@ -88,6 +88,8 @@ export const columns = (service: GenericService<CustomerModel>, onCustomerUpdate
             toast.error(response.errors?.[0] || "Kayıt silinirken bir hata oluştu!");
           }
         }}></IconRowRemove>
+        <IconCar></IconCar>
+        <IconReportMoney></IconReportMoney>
         </div>
       );
     },
