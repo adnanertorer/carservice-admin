@@ -56,7 +56,7 @@ export function CustomerList() {
     }
   }, [customerService]);
 
-  const customerColumns = React.useMemo(() => columns(fetchCustomers), [fetchCustomers]);
+  const customerColumns = React.useMemo(() => columns(customerService, fetchCustomers), [customerService, fetchCustomers]);
 
   React.useEffect(()=>{
     fetchCustomers();

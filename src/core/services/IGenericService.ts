@@ -13,9 +13,9 @@ export interface IGenericService<T>{
     ) => Promise<MainResponse<T>>;
     getList: () => Promise<MainResponse<T>>;
 
-    remove: (id: string) => Promise<void>;
-    update: (model: T) => Promise<void>;
-    getById: (id: string) => Promise<T>;
-    save: (model: T) => Promise<void>;
+    remove: (id: string) =>  Promise<MainResponse<T>>;
+    update: (model: T) => Promise<MainResponse<T>>;
+    getById: (id: string) =>  Promise<MainResponse<T>>;
+    save: (model: T) =>  Promise<MainResponse<T>>;
     customPostByPagination: (model: IGenericModel, url: string) => Promise<PaginatedResponse<T>>;
 }

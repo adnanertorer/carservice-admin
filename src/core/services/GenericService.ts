@@ -43,20 +43,23 @@ export class GenericService<TModel> implements IGenericService<TModel> {
     return response.data;
   }
 
-  remove(id: string): Promise<void> {
-    return api.delete(`${this.basePath}/${id}`);
+  async remove(id: string): Promise<MainResponse<TModel>> {
+    const response = await api.delete(`${this.basePath}/${id}`);
+    return response.data;
   }
 
-  async update(model: TModel): Promise<void> {
-    return await api.put(`${this.basePath}`, model);
+  async update(model: TModel): Promise<MainResponse<TModel>> {
+    const result = await api.put(`${this.basePath}`, model);
+    return result.data;
   }
 
-  async getById(id: string): Promise<TModel> {
+  async getById(id: string): Promise<MainResponse<TModel>> {
     const response = await api.get(`${this.basePath}/${id}`);
     return response.data;
   }
 
-  async save(model: TModel): Promise<void> {
-    return await api.post(`${this.basePath}`, model);
+  async save(model: TModel): Promise<MainResponse<TModel>> {
+    const response = await api.post(`${this.basePath}`, model);
+    return response.data;
   }
 }
