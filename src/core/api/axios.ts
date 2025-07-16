@@ -97,17 +97,30 @@ api.interceptors.response.use(
   
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function handle400Error(data: any) {
+    console.error('400 Error:', data);
     if (Array.isArray(data)) {
       data.forEach((res: { code: string; name: string }) => {
         toast.error(`${res.code}: ${res.name}`);
       });
     } else if (data?.errors && Array.isArray(data.errors)) {
+      console.error('400 Error with errors array:', data.errors);
       data.errors.forEach((res: { code: string; name: string }) => {
         toast.error(`${res.code}: ${res.name}`);
       });
-    } else if (data?.code && data?.name) {
+    } else if (typeof data?.errors === "object" && data.errors !== null) {
+    const entries = Object.entries(data.errors) as [string, string[]][];
+    entries.forEach(([field, messages]) => {
+      messages.forEach((msg) => {
+        toast.error(`${field}: ${msg}`);
+      });
+    });
+    return;
+  } else if (data?.code && data?.name) {
       toast.error(`${data.code}: ${data.name}`);
-    } else {
+    } else if(data?.detail){
+      toast.error(data.detail);
+    }
+     else {
       toast.error('Geçersiz istek. Lütfen bilgilerinizi kontrol edin.');
       console.error('Unhandled 400 error structure:', data);
     }

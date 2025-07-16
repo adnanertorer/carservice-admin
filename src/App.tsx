@@ -6,6 +6,7 @@ import { CustomerList } from "./features/customers/components/CustomerList";
 import LoginPage from "./pages/auth/login/login-page";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { CustomerVehicleList } from "./features/customer-vehicles/components/vehicle-list";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
               }
             >
             <Route path="/customers" element={<CustomerList />} />
+            <Route path="/customers/:customerId/vehicles" element={<CustomerVehicleList />} />
             </Route>
           </Routes>
         </BrowserRouter>
