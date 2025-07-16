@@ -9,6 +9,7 @@ import {
   IconFileAi,
   IconFileDescription,
   IconFileWord,
+  IconFriends,
   IconHelp,
   IconMoneybagPlus,
   IconReport,
@@ -35,6 +36,11 @@ const data = {
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
+    {
+      title: "Personeller",
+      url: "/employees",
+      icon: IconFriends,
+    },
     {
       title: "Müşteriler",
       url: "/customers",

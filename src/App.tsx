@@ -7,6 +7,7 @@ import LoginPage from "./pages/auth/login/login-page";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { CustomerVehicleList } from "./features/customer-vehicles/components/vehicle-list";
+import { EmployeeList } from "./features/employees/components/employee-list";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
                 </PrivateRoute>
               }
             >
+            <Route path="/employees" element={<EmployeeList />} />
             <Route path="/customers" element={<CustomerList />} />
             <Route path="/customers/:customerId/vehicles" element={<CustomerVehicleList />} />
             </Route>

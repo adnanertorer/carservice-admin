@@ -42,20 +42,6 @@ export const columns = (
     ),
   },
   {
-    accessorKey: "taxOffice",
-    header: ({ column }) => sortableHeader("Vergi Dairesi", column),
-    cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("taxOffice")}</div>
-    ),
-  },
-  {
-    accessorKey: "taxNumber",
-    header: ({ column }) => sortableHeader("Vergi Numarası", column),
-    cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("taxNumber")}</div>
-    ),
-  },
-  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
