@@ -1,26 +1,17 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
 import type { CustomerModel } from "../models/CustomerModel";
 
-import type { Column } from "@tanstack/react-table";
 import { EditCustomerDrawer } from "./edit-drawer";
 import { IconCar, IconReportMoney, IconRowRemove } from "@tabler/icons-react";
 import { toast } from "react-toastify";
 import type { GenericService } from "@/core/services/GenericService";
+import { sortableHeader } from "@/components/sortable-header";
+import type { NavigateFunction } from "react-router-dom";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const sortableHeader = (label: string, column: Column<any, unknown>) => (
-  <Button
-    variant="ghost"
-    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  >
-    {label}
-    <ArrowUpDown className="ml-2 h-4 w-4" />
-  </Button>
-);
-
-export const columns = (service: GenericService<CustomerModel>, onCustomerUpdated?: () => Promise<void>): ColumnDef<CustomerModel>[] => [
+export const columns = (
+  service: GenericService<CustomerModel>,
+   onCustomerUpdated?: () => Promise<void>,
+  navigate?: NavigateFunction): ColumnDef<CustomerModel>[] => [
   {
     accessorKey: "name",
     header: "Adı",
@@ -88,7 +79,11 @@ export const columns = (service: GenericService<CustomerModel>, onCustomerUpdate
             toast.error(response.errors?.[0] || "Kayıt silinirken bir hata oluştu!");
           }
         }}></IconRowRemove>
-        <IconCar></IconCar>
+        <IconCar onClick={() => {
+          if (navigate) {
+            navigate(`/customers/${customer.id}/vehicles`);
+          }
+        }}></IconCar>
         <IconReportMoney></IconReportMoney>
         </div>
       );
