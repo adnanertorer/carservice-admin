@@ -14,10 +14,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ColumnFilterInput } from "@/components/table-filter";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TableHeaders } from "@/components/table-header";
-import { Pagination } from "@/components/pagination";
 import type { EmployeeModel } from "../models/employee-model";
 import { employeeColumns } from "./employee-columns";
 import { CreateEmployeeDrawer } from "./create-employee-drawer";
+import { CustomPagination } from "@/core/components/pagination";
+
 
 export function EmployeeList() {
   const data: EmployeeModel[] = [];
@@ -26,18 +27,28 @@ export function EmployeeList() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
   const employeeService = useMemo(
     () => new GenericService<EmployeeModel>("employee"),
     []
   );
 
+  const pageIndexChange = useCallback((pageIndex: number) => {
+    setPageIndex(pageIndex);
+  }, []);
+
+  useEffect(() => {
+    fetchEmployees();
+  },[pageIndex]);
+
   const fetchEmployees = useCallback(async () => {
     const response = await employeeService.getByFilter(
       undefined,
       undefined,
-      0,
-      50,
+      pageIndex,
+      pageSize,
       "",
       false
     );
@@ -48,8 +59,11 @@ export function EmployeeList() {
     ) {
       setEmployees(response.data?.items);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  console.log("pageIndex", pageIndex);
+
 
   const columns = useMemo(
     () => employeeColumns(employeeService, fetchEmployees),
@@ -88,7 +102,7 @@ export function EmployeeList() {
       />
       <div className="rounded-md border">
         <div className="p-2">
-            <CreateEmployeeDrawer onEmployeeCreated={fetchEmployees} />
+          <CreateEmployeeDrawer onEmployeeCreated={fetchEmployees} />
         </div>
         <Table>
           <TableHeaders table={table} />
@@ -122,7 +136,9 @@ export function EmployeeList() {
           </TableBody>
         </Table>
       </div>
-      <Pagination table={table} />
+      <CustomPagination table={table} setPageIndex={pageIndexChange} setPageSize={setPageSize}
+      currentIndex={0} 
+       />
     </div>
   );
 }

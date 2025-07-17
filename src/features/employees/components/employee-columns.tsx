@@ -41,7 +41,20 @@ export const employeeColumns = (
   {
     accessorKey: "isActive",
     header: "Aktif",
-    cell: ({ row }) => (row.getValue("isActive") ? "Evet" : "Hayır"),
+
+    cell: ({ row }) => {
+      const value = row.getValue("isActive") as boolean;
+      return (
+        <span
+          onClick={() => {
+            toast.info("Aktiflik durumu değiştirildi.");
+          }}
+          className={value ? "text-green-500" : "text-red-500"}
+        >
+          {value ? "Evet" : "Hayır"}
+        </span>
+      );
+    },
   },
   {
     id: "actions",
