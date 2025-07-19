@@ -23,16 +23,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { CreateVehicleProps } from "../props/create-vehicle-props";
 import type { CustomerVehicleModel } from "../models/customer-vehicle-model";
 import { customerVehicleSchema } from "../schemas/customer-vehicle-schema";
 import { useParams } from "react-router-dom";
+import type { IEditVehicleProps } from "../props/edit-vehicle-props";
 
-export function CreateVehicleForm({
+export function EditVehicleForm({
   className,
   onSubmit,
+  vehicle,
   ...props
-}: CreateVehicleProps & Omit<React.ComponentProps<"div">, "onSubmit">) {
+}: IEditVehicleProps & Omit<React.ComponentProps<"div">, "onSubmit">) {
 
      const { customerId } = useParams<{ customerId: string }>();
      
@@ -47,15 +48,15 @@ export function CreateVehicleForm({
   const form = useForm<z.infer<typeof customerVehicleSchema>>({
     resolver: zodResolver(customerVehicleSchema),
     defaultValues: {
-      brand: "",
-      model: "",
-      year: 0,
-      plate: "",
-      engine: "",
-      fuelTypeId: 0,
-      serialNumber: "",
+      brand: vehicle.brand || "",
+      model: vehicle.model || "",
+      year: vehicle.year || 0,
+      plate: vehicle.plate || "",
+      engine: vehicle.engine || "",
+      fuelTypeId: vehicle.fuelTypeId || 0,
+      serialNumber: vehicle.serialNumber || "",
       customerId: customerId || "",
-      id: ""
+      id: vehicle.id || ""
     },
   });
 
@@ -178,7 +179,7 @@ export function CreateVehicleForm({
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit">Kaydet</Button>
         </form>
       </Form>
     </div>

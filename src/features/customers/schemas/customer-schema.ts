@@ -1,6 +1,7 @@
 import z from "zod";
 
 export const customerFormSchema = z.object({
+  id: z.string().optional(),
   name: z.string().min(2, {
     message: "İsim alanı en az 2 karakter olmalıdır.",
   }),

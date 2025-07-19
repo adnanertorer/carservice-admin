@@ -1,10 +1,7 @@
 "use client";
 
-import { CreateCustomerForm } from "./create-customer-form";
-import { GenericService } from "@/core/services/GenericService";
+import { CreateCustomerForm } from "../forms/create-customer-form";
 import type { CustomerModel } from "../models/CustomerModel";
-import { toast } from "react-toastify";
-import { useState } from "react";
 import { CreateDrawer } from "@/components/create-drawer";
 
 interface CreateCustomerDrawerProps {
@@ -14,17 +11,6 @@ interface CreateCustomerDrawerProps {
 export const CreateCustomerDrawer: React.FC<CreateCustomerDrawerProps> = ({
   onCustomerCreated,
 }) => {
-  const [open, setOpen] = useState(false);
-  const service = new GenericService<CustomerModel>("customer");
-
-  const handleCreate = async (model: CustomerModel) => {
-    await service.save(model);
-    toast.success("Kayıt başarılı!");
-    setOpen(false);
-    if (onCustomerCreated) {
-      await onCustomerCreated();
-    }
-  };
 
   return (
     <CreateDrawer<CustomerModel>

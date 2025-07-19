@@ -28,7 +28,7 @@ import {
 import type { DistrictModel } from "@/shared/models/district-model";
 import type { MainResponse } from "@/core/api/responses/PaginatedResponse";
 import api from "@/core/api/axios";
-import type { CreateCustomerFormProps } from "./create-customer-props";
+import type { CreateCustomerFormProps } from "../props/create-customer-props";
 import type { CustomerModel } from "../models/CustomerModel";
 import { customerFormSchema } from "../schemas/customer-schema";
 

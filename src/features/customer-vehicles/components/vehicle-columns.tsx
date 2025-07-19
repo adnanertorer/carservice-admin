@@ -3,6 +3,7 @@ import type { CustomerVehicleModel } from "../models/customer-vehicle-model";
 import type { ColumnDef } from "@tanstack/react-table";
 import { toast } from "react-toastify";
 import { IconRowRemove } from "@tabler/icons-react";
+import { EditCustomerVehicleDrawer } from "./edit-vehicle-drawer";
 
 export const vehicleColumns = (service: GenericService<CustomerVehicleModel>, onVehicleUpdated?: () => Promise<void>) :
 ColumnDef<CustomerVehicleModel>[]  => [
@@ -53,6 +54,9 @@ ColumnDef<CustomerVehicleModel>[]  => [
             const vehicle = row.original;
             return (
                 <div className="flex items-center gap-6">
+                    <EditCustomerVehicleDrawer
+                        vehicle={vehicle}
+                        onVehicleUpdated={onVehicleUpdated} />
                     <IconRowRemove
                         className="cursor-pointer"
                         onClick={() => {

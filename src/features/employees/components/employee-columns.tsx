@@ -3,6 +3,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { toast } from "react-toastify";
 import { IconRowRemove } from "@tabler/icons-react";
 import type { EmployeeModel } from "../models/employee-model";
+import { EditEmployeeDrawer } from "./edit-employee-drawer";
 
 export const employeeColumns = (
   service: GenericService<EmployeeModel>,
@@ -63,6 +64,9 @@ export const employeeColumns = (
       const employee = row.original;
       return (
         <div className="flex items-center gap-6">
+          <EditEmployeeDrawer
+            employee={employee}
+            onEmployeeUpdated={onEmployeeUpdated} />
           <IconRowRemove
             className="cursor-pointer"
             onClick={() => {
