@@ -1,3 +1,6 @@
+import type { CityModel } from "./CityModel";
+import type { DistrictModel } from "./DistrictModel";
+
 export type CustomerModel = {
     id: string;
     name: string;
@@ -10,4 +13,6 @@ export type CustomerModel = {
     isActive: boolean;
     cityId: number;
     districtId: number;
+    city?: CityModel;
+    district?: DistrictModel;
 }

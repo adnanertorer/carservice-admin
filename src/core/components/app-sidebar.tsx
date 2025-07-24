@@ -42,6 +42,11 @@ const data = {
       icon: IconFriends,
     },
     {
+      title: "Tedarikçiler",
+      url: "/suppliers",
+      icon: IconDashboard,
+    },
+    {
       title: "Müşteriler",
       url: "/customers",
       icon: IconDashboard,
