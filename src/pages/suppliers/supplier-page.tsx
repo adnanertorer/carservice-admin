@@ -14,7 +14,6 @@ import type {
   SortingState,
   VisibilityState,
 } from "@tanstack/react-table";
-import { columns } from "./columns";
 
 import {
   Table,
@@ -23,16 +22,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { GenericService } from "@/core/services/GenericService";
-import { CreateCustomerDrawer } from "./create-drawer";
-import type { CustomerModel } from "../models/CustomerModel";
 import { ColumnFilterInput } from "@/components/table-filter";
 import { TableHeaders } from "@/components/table-header";
 import { Pagination } from "@/components/pagination";
-import { useNavigate } from "react-router-dom";
+import type { SupplierModel } from "@/features/suppliers/models/supplier-model";
+import { columns } from "@/features/suppliers/components/columns";
+import { CreateSupplierDrawer } from "@/features/suppliers/components/create-drawer";
 
-export function CustomerList() {
-const navigate = useNavigate();
-  const data: CustomerModel[] = [];
+export function SupplierPage() {
+  const data: SupplierModel[] = [];
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -40,14 +38,14 @@ const navigate = useNavigate();
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [customers, setCustomers] = React.useState<CustomerModel[]>(data);
-  const customerService = React.useMemo(
-    () => new GenericService<CustomerModel>("customer"),
+  const [suppliers, setSuppliers] = React.useState<SupplierModel[]>(data);
+  const supplierService = React.useMemo(
+    () => new GenericService<SupplierModel>("supplier"),
     []
   );
 
-  const fetchCustomers = React.useCallback(async () => {
-    const res = await customerService.getByFilter(
+  const fetchSuppliers = React.useCallback(async () => {
+    const res = await supplierService.getByFilter(
       undefined,
       undefined,
       0,
@@ -55,23 +53,23 @@ const navigate = useNavigate();
       "",
       false
     );
-    if (res.succeeded && res.data?.items && res.data?.items.length > 0) {
-      setCustomers(res.data?.items);
+    if (res.succeeded && res.data?.items) {
+      setSuppliers(res.data?.items);
     }
-  }, [customerService]);
+  }, [supplierService]);
 
-  const customerColumns = React.useMemo(
-    () => columns(customerService, fetchCustomers, navigate),
-    [customerService, fetchCustomers, navigate]
+  const supplierColumns = React.useMemo(
+    () => columns(supplierService, fetchSuppliers),
+    [supplierService, fetchSuppliers]
   );
 
   React.useEffect(() => {
-    fetchCustomers();
-  }, [fetchCustomers]);
+    fetchSuppliers();
+  }, [fetchSuppliers]);
 
-  const table = useReactTable<CustomerModel>({
-    data: customers,
-    columns: customerColumns,
+  const table = useReactTable<SupplierModel>({
+    data: suppliers,
+    columns: supplierColumns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -97,7 +95,7 @@ const navigate = useNavigate();
       />
       <div className="rounded-md border">
         <div className="p-2">
-          <CreateCustomerDrawer onCustomerCreated={fetchCustomers} />
+          <CreateSupplierDrawer onSupplierCreated={fetchSuppliers} />
         </div>
         <Table>
         <TableHeaders table={table} />
@@ -121,7 +119,7 @@ const navigate = useNavigate();
           ) : (
             <TableRow>
               <TableCell
-                colSpan={customerColumns.length}
+                colSpan={supplierColumns.length}
                 className="h-24 text-center"
               >
                 No results.

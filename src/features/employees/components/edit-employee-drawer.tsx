@@ -1,14 +1,9 @@
 "use client";
 
 import { EditDrawer } from "@/components/edit-drawer";
-import type { EmployeeModel } from "../models/employee-model";
 import { EditEmployeeForm } from "../forms/edit-employee-form";
+import type { EditEmployeeDrawerProps } from "../props/edit-employee-drawer-props";
 
-interface EditEmployeeDrawerProps {
-  onEmployeeUpdated?: () => Promise<void>;
-  employee: EmployeeModel;
-  children?: React.ReactNode;
-}
 
 export const EditEmployeeDrawer: React.FC<EditEmployeeDrawerProps> = ({
   onEmployeeUpdated,

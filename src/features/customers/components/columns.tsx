@@ -10,8 +10,9 @@ import type { NavigateFunction } from "react-router-dom";
 
 export const columns = (
   service: GenericService<CustomerModel>,
-   onCustomerUpdated?: () => Promise<void>,
-  navigate?: NavigateFunction): ColumnDef<CustomerModel>[] => [
+  onCustomerUpdated?: () => Promise<void>,
+  navigate?: NavigateFunction
+): ColumnDef<CustomerModel>[] => [
   {
     accessorKey: "name",
     header: "Adı",
@@ -35,11 +36,23 @@ export const columns = (
     cell: ({ row }) => <div className="lowercase">{row.getValue("phone")}</div>,
   },
   {
+    accessorKey: "city.name",
+    header: ({ column }) => sortableHeader("Şehir", column),
+    cell: ({ row }) => {
+      return <div className="capitalize">{row.original.city?.name}</div>;
+    },
+  },
+  {
+    accessorKey: "district.name",
+    header: ({ column }) => sortableHeader("İlçe", column),
+    cell: ({ row }) => (
+      <div className="capitalize">{row.original.district?.name}</div>
+    ),
+  },
+  {
     accessorKey: "address",
     header: ({ column }) => sortableHeader("Adres", column),
-    cell: ({ row }) => (
-      row.getValue("address")
-    ),
+    cell: ({ row }) => row.getValue("address"),
   },
   {
     id: "actions",
@@ -48,29 +61,34 @@ export const columns = (
       const customer = row.original;
       return (
         <div className="flex items-center gap-6">
-        <EditCustomerDrawer
-          customer={customer}
-          onCustomerUpdated={onCustomerUpdated}
-        >
-        </EditCustomerDrawer>
-        <IconRowRemove onClick={async () => {
-          const response = await service.remove(customer.id);
-          console.log("Kayıt silme yanıtı:", response);
-          if (response.succeeded) {
-            toast.success("Kayıt silindi!");
-            if (onCustomerUpdated) {
-              await onCustomerUpdated();
-            }
-          } else {
-            toast.error(response.errors?.[0] || "Kayıt silinirken bir hata oluştu!");
-          }
-        }}></IconRowRemove>
-        <IconCar onClick={() => {
-          if (navigate) {
-            navigate(`/customers/${customer.id}/vehicles`);
-          }
-        }}></IconCar>
-        <IconReportMoney></IconReportMoney>
+          <EditCustomerDrawer
+            customer={customer}
+            onCustomerUpdated={onCustomerUpdated}
+          ></EditCustomerDrawer>
+          <IconRowRemove
+            onClick={async () => {
+              const response = await service.remove(customer.id);
+              console.log("Kayıt silme yanıtı:", response);
+              if (response.succeeded) {
+                toast.success("Kayıt silindi!");
+                if (onCustomerUpdated) {
+                  await onCustomerUpdated();
+                }
+              } else {
+                toast.error(
+                  response.errors?.[0] || "Kayıt silinirken bir hata oluştu!"
+                );
+              }
+            }}
+          ></IconRowRemove>
+          <IconCar
+            onClick={() => {
+              if (navigate) {
+                navigate(`/customers/${customer.id}/vehicles`);
+              }
+            }}
+          ></IconCar>
+          <IconReportMoney></IconReportMoney>
         </div>
       );
     },

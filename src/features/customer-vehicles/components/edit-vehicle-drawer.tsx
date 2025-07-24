@@ -2,13 +2,7 @@
 
 import { EditDrawer } from "@/components/edit-drawer";
 import { EditVehicleForm } from "../forms/edit-vehicle-form";
-import type { CustomerVehicleModel } from "../models/customer-vehicle-model";
-
-interface EditCustomerVehicleDrawerProps {
-  onVehicleUpdated?: () => Promise<void>;
-  vehicle: CustomerVehicleModel;
-  children?: React.ReactNode;
-}
+import type { EditCustomerVehicleDrawerProps } from "../props/edit-customer-vehicle-drawer-props";
 
 export const EditCustomerVehicleDrawer: React.FC<EditCustomerVehicleDrawerProps> = ({
   onVehicleUpdated,
