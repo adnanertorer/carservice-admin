@@ -14,7 +14,7 @@ export const mainServiceSchema = z.object({
   serviceDate: z.date({
     message: "Servis tarihi geçerli bir tarih olmalıdır.",
   }),
-  serviceStatus: z.number().int().min(0, {
+  mainServiceStatus: z.number().int().min(0, {
     message: "Servis durumu 0 veya daha büyük bir tamsayı olmalıdır.",
   })
 });

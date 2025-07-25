@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/popover";
 import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export function CreateMainServiceForm({
   className,
@@ -45,7 +46,7 @@ export function CreateMainServiceForm({
       description: "",
       id: "",
       serviceDate: new Date(),
-      serviceStatus: 0,
+      mainServiceStatus: 0,
       vehicleId: vehicleId || "",
     },
   });
@@ -104,11 +105,16 @@ export function CreateMainServiceForm({
                       <Button
                         variant="outline"
                         id="date-picker"
-                        className="w-32 justify-between font-normal"
+                        className="w-60 justify-between font-normal"
                       >
                         {field.value
-                          ? new Date(field.value).toLocaleDateString()
-                          : "Select date"}
+                          ? new Date(field.value).toLocaleDateString('tr-TR') + 
+                            " " + 
+                            new Date(field.value).toLocaleTimeString('tr-TR', { 
+                              hour: '2-digit', 
+                              minute: '2-digit' 
+                            })
+                          : "Tarih ve saat seçiniz"}
                         <ChevronDownIcon />
                       </Button>
                     </PopoverTrigger>
@@ -116,17 +122,75 @@ export function CreateMainServiceForm({
                       className="w-auto overflow-hidden p-0"
                       align="start"
                     >
-                      <Calendar
-                        mode="single"
-                        selected={
-                          field.value ? new Date(field.value) : undefined
-                        }
-                        captionLayout="dropdown"
-                        onSelect={(date) => {
-                          field.onChange(date);
-                          setOpen(false);
-                        }}
-                      />
+                      <div className="p-3">
+                        <Calendar
+                          mode="single"
+                          selected={
+                            field.value ? new Date(field.value) : undefined
+                          }
+                          captionLayout="dropdown"
+                          onSelect={(date) => {
+                            if (date) {
+                              // Mevcut saat ve dakikayı koru
+                              const currentDate = field.value ? new Date(field.value) : new Date();
+                              date.setHours(currentDate.getHours());
+                              date.setMinutes(currentDate.getMinutes());
+                              field.onChange(date);
+                            }
+                          }}
+                        />
+                        <div className="border-t pt-3 space-y-2">
+                          <div className="text-sm font-medium">Saat Seçimi</div>
+                          <div className="flex gap-2">
+                            <Select
+                              value={field.value ? new Date(field.value).getHours().toString() : "9"}
+                              onValueChange={(hour) => {
+                                const currentDate = field.value ? new Date(field.value) : new Date();
+                                currentDate.setHours(parseInt(hour));
+                                field.onChange(currentDate);
+                              }}
+                            >
+                              <SelectTrigger className="w-20">
+                                <SelectValue placeholder="Saat" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {Array.from({ length: 24 }, (_, i) => (
+                                  <SelectItem key={i} value={i.toString()}>
+                                    {i.toString().padStart(2, '0')}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <Select
+                              value={field.value ? new Date(field.value).getMinutes().toString() : "0"}
+                              onValueChange={(minute) => {
+                                const currentDate = field.value ? new Date(field.value) : new Date();
+                                currentDate.setMinutes(parseInt(minute));
+                                field.onChange(currentDate);
+                              }}
+                            >
+                              <SelectTrigger className="w-20">
+                                <SelectValue placeholder="Dakika" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {Array.from({ length: 4 }, (_, i) => i * 15).map((minute) => (
+                                  <SelectItem key={minute} value={minute.toString()}>
+                                    {minute.toString().padStart(2, '0')}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full"
+                            onClick={() => setOpen(false)}
+                          >
+                            Tamam
+                          </Button>
+                        </div>
+                      </div>
                     </PopoverContent>
                   </Popover>
                 </FormControl>

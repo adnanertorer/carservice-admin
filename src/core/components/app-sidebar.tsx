@@ -58,7 +58,7 @@ const data = {
     },
     {
       title: "Servisler",
-      url: "#",
+      url: "/main-services",
       icon: IconSettings,
     },
     {
