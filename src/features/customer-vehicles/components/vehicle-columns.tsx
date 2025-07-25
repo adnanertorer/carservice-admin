@@ -4,6 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { toast } from "react-toastify";
 import { IconRowRemove } from "@tabler/icons-react";
 import { EditCustomerVehicleDrawer } from "./edit-vehicle-drawer";
+import { CreateMainServiceDrawer } from "@/features/main-services/components/create-mainservice-drawer";
 
 export const vehicleColumns = (service: GenericService<CustomerVehicleModel>, onVehicleUpdated?: () => Promise<void>) :
 ColumnDef<CustomerVehicleModel>[]  => [
@@ -70,6 +71,9 @@ ColumnDef<CustomerVehicleModel>[]  => [
                                 });
                         }}
                     />
+                    <CreateMainServiceDrawer vehicleId={vehicle.id} onMainServiceCreated={async () => {
+                        toast.success('Ana servis başarıyla oluşturuldu.');
+                    }} />
                 </div>
             );
         }

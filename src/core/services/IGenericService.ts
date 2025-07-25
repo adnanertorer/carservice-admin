@@ -1,3 +1,4 @@
+import type { ISingleResponse } from "../api/responses/ISingleResponse";
 import type { MainResponse, PaginatedResponse } from "../api/responses/PaginatedResponse";
 import type { IGenericModel } from "./IGenericModel";
 
@@ -13,9 +14,9 @@ export interface IGenericService<T>{
     ) => Promise<MainResponse<T>>;
     getList: () => Promise<MainResponse<T>>;
 
-    remove: (id: string) =>  Promise<MainResponse<T>>;
-    update: (model: T) => Promise<MainResponse<T>>;
-    getById: (id: string) =>  Promise<MainResponse<T>>;
-    save: (model: T) =>  Promise<MainResponse<T>>;
+    remove: (id: string) =>  Promise<ISingleResponse<T>>;
+    update: (model: T) => Promise<ISingleResponse<T>>;
+    getById: (id: string) =>  Promise<ISingleResponse<T>>;
+    save: (model: T) =>  Promise<ISingleResponse<T>>;
     customPostByPagination: (model: IGenericModel, url: string) => Promise<PaginatedResponse<T>>;
 }

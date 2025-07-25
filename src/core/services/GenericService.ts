@@ -1,5 +1,6 @@
 
 import api from "../api/axios";
+import type { ISingleResponse } from "../api/responses/ISingleResponse";
 import type { MainResponse, PaginatedResponse } from "../api/responses/PaginatedResponse";
 import type { IGenericModel } from "./IGenericModel";
 import type { IGenericService } from "./IGenericService";
@@ -43,22 +44,22 @@ export class GenericService<TModel> implements IGenericService<TModel> {
     return response.data;
   }
 
-  async remove(id: string): Promise<MainResponse<TModel>> {
+  async remove(id: string): Promise<ISingleResponse<TModel>> {
     const response = await api.delete(`${this.basePath}/${id}`);
     return response.data;
   }
 
-  async update(model: TModel): Promise<MainResponse<TModel>> {
+  async update(model: TModel): Promise<ISingleResponse<TModel>> {
     const result = await api.put(`${this.basePath}`, model);
     return result.data;
   }
 
-  async getById(id: string): Promise<MainResponse<TModel>> {
+  async getById(id: string): Promise<ISingleResponse<TModel>> {
     const response = await api.get(`${this.basePath}/${id}`);
     return response.data;
   }
 
-  async save(model: TModel): Promise<MainResponse<TModel>> {
+  async save(model: TModel): Promise<ISingleResponse<TModel>> {
     const response = await api.post(`${this.basePath}`, model);
     return response.data;
   }
