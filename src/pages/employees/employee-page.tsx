@@ -14,13 +14,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ColumnFilterInput } from "@/components/table-filter";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TableHeaders } from "@/components/table-header";
-import type { EmployeeModel } from "../models/employee-model";
-import { employeeColumns } from "./employee-columns";
-import { CreateEmployeeDrawer } from "./create-employee-drawer";
 import { CustomPagination } from "@/core/components/pagination";
+import type { EmployeeModel } from "@/features/employees/models/employee-model";
+import { employeeColumns } from "@/features/employees/components/employee-columns";
+import { CreateEmployeeDrawer } from "@/features/employees/components/create-employee-drawer";
 
 
-export function EmployeeList() {
+export function EmployeePage() {
   const data: EmployeeModel[] = [];
   const [sorting, setSorting] = useState<SortingState>([]);
   const [employees, setEmployees] = useState<EmployeeModel[]>(data);
@@ -38,10 +38,6 @@ export function EmployeeList() {
   const pageIndexChange = useCallback((pageIndex: number) => {
     setPageIndex(pageIndex);
   }, []);
-
-  useEffect(() => {
-    fetchEmployees();
-  },[pageIndex]);
 
   const fetchEmployees = useCallback(async () => {
     const response = await employeeService.getByFilter(
@@ -62,8 +58,11 @@ export function EmployeeList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log("pageIndex", pageIndex);
+  useEffect(() => {
+    fetchEmployees();
+  },[fetchEmployees, pageIndex]);
 
+  console.log("pageIndex", pageIndex);
 
   const columns = useMemo(
     () => employeeColumns(employeeService, fetchEmployees),

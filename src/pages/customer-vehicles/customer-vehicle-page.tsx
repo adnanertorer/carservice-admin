@@ -9,18 +9,18 @@ import {
   type SortingState,
   type VisibilityState,
 } from "@tanstack/react-table";
-import type { CustomerVehicleModel } from "../models/customer-vehicle-model";
 import { GenericService } from "@/core/services/GenericService";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { vehicleColumns } from "./vehicle-columns";
 import { ColumnFilterInput } from "@/components/table-filter";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TableHeaders } from "@/components/table-header";
 import { Pagination } from "@/components/pagination";
 import { useParams } from "react-router-dom";
-import { CreateVehicleDrawer } from "./create-vehicle-drawer";
+import type { CustomerVehicleModel } from "@/features/customer-vehicles/models/customer-vehicle-model";
+import { vehicleColumns } from "@/features/customer-vehicles/components/vehicle-columns";
+import { CreateVehicleDrawer } from "@/features/customer-vehicles/components/create-vehicle-drawer";
 
-export function CustomerVehicleList() {
+export function CustomerVehiclePage() {
   const data: CustomerVehicleModel[] = [];
   const [sorting, setSorting] = useState<SortingState>([]);
   const [vehicles, setVehicles] = useState<CustomerVehicleModel[]>(data);
