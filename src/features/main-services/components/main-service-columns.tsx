@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { IconRowRemove } from "@tabler/icons-react";
+import { IconRowRemove, IconSettingsPlus } from "@tabler/icons-react";
 import { toast } from "react-toastify";
 import type { GenericService } from "@/core/services/GenericService";
 import type { MainServiceModel } from "../models/main-service-model";
@@ -35,7 +35,7 @@ export const MainServiceColumns = (
       console.log("Service Status:", status);
       return (
         <div className="capitalize">
-          {status == 0 ? "Açık" : status == 1 ? "Hazırlanıyor" : status == 2 ? "Tamamlandı" : "Bilinmiyor"}
+          {status == 0 ? "Açık" : status == 1 ? "Hazırlanıyor" : status == 2 ? "Tamamlandı" : status == 3 ? "İptal Edildi" : null}
         </div>
       );
     },
@@ -60,6 +60,9 @@ export const MainServiceColumns = (
       const mainService = row.original;
       return (
         <div className="flex items-center gap-6">
+          {mainService.mainServiceStatus === 0 && (
+            <IconSettingsPlus></IconSettingsPlus>
+          )}
           <IconRowRemove
             onClick={async () => {
               const response = await service.remove(mainService.id);

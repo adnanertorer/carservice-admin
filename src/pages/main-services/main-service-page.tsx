@@ -22,7 +22,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { GenericService } from "@/core/services/GenericService";
-import { ColumnFilterInput } from "@/components/table-filter";
 import { TableHeaders } from "@/components/table-header";
 import { Pagination } from "@/components/pagination";
 import type { MainServiceModel } from "@/features/main-services/models/main-service-model";
@@ -87,11 +86,6 @@ export function MainServicePage() {
 
   return (
     <div className="w-full">
-      <ColumnFilterInput
-        table={table}
-        columnKey="email"
-        placeholder="Filter email..."
-      />
       <div className="rounded-md border">
         <div className="p-2">
           
