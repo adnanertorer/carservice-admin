@@ -1,3 +1,6 @@
+import type { EmployeeModel } from "@/features/employees/models/employee-model";
+import type { SupplierModel } from "@/features/suppliers/models/supplier-model";
+
 export type SubServiceModel = {
     id?: string;
     mainServiceId: string;
@@ -10,4 +13,6 @@ export type SubServiceModel = {
     supplierId?: string;
     discount?: number;
     cost: number;
+    employee?: EmployeeModel;
+    supplier?: SupplierModel;
 }

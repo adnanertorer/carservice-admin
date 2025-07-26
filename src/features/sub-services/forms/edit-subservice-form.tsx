@@ -32,17 +32,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { subServiceSchema } from "../schemas/sub-service-schema";
-import type { ICreateSubServiceProps } from "../props/create-subservice-props";
 import type { SubServiceModel } from "../models/sub-service-model";
 import type { EmployeeModel } from "@/features/employees/models/employee-model";
 import type { SupplierModel } from "@/features/suppliers/models/supplier-model";
+import type { IEditSubServiceProps } from "../props/edit-sub-service-props";
 
-export function CreateSubServiceForm({
+export function EditSubServiceForm({
   className,
   onSubmit,
-  mainServiceId,
+  state,
   ...props
-}: ICreateSubServiceProps & Omit<React.ComponentProps<"div">, "onSubmit">) {
+}: IEditSubServiceProps & Omit<React.ComponentProps<"div">, "onSubmit">) {
   const [employees, setEmployees] = useState<EmployeeModel[]>([]);
   const [suppliers, setSuppliers] = useState<SupplierModel[]>([]);
   const [open, setOpen] = useState(false);
@@ -50,17 +50,17 @@ export function CreateSubServiceForm({
   const form = useForm<z.infer<typeof subServiceSchema>>({
     resolver: zodResolver(subServiceSchema),
     defaultValues: {
-      cost: 0,
-      description: "",
-      operationDate: new Date(),
-      mainServiceId: mainServiceId || "",
-      discount: 0,
-      employeeId: undefined,
-      id: "",
-      material: "",
-      materialBrand: "",
-      operation: "",
-      supplierId: undefined,
+      cost: state.cost || 0,
+      description: state.description || "",
+      operationDate: state.operationDate || new Date(),
+      mainServiceId: state.mainServiceId || "",
+      discount: state.discount || 0,
+      employeeId: state.employeeId || undefined,
+      id: state.id,
+      material: state.material || "",
+      materialBrand: state.materialBrand || "",
+      operation: state.operation || "",
+      supplierId: state.supplierId || undefined,
     },
   });
 
@@ -112,8 +112,6 @@ export function CreateSubServiceForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = form.getValues();
-    console.log(formData);
     onSubmit(form.getValues() as SubServiceModel);
   };
 
@@ -270,7 +268,7 @@ export function CreateSubServiceForm({
                 <Select
                   onValueChange={(val) => field.onChange(val)}
                   defaultValue={
-                    field.value !== undefined ? String(field.value) : undefined
+                    state.employeeId !== undefined ? String(state.employeeId) : undefined
                   }
                 >
                   <FormControl>
@@ -340,7 +338,7 @@ export function CreateSubServiceForm({
                 <Select
                   onValueChange={(val) => field.onChange(val)}
                   defaultValue={
-                    field.value !== undefined ? String(field.value) : undefined
+                    state.supplierId !== undefined ? String(state.supplierId) : undefined
                   }
                 >
                   <FormControl>
@@ -388,7 +386,7 @@ export function CreateSubServiceForm({
               </FormItem>
             )}
           />
-          <Button type="submit">Kaydet</Button>
+          <Button type="submit">Güncelle</Button>
         </form>
       </Form>
     </div>
