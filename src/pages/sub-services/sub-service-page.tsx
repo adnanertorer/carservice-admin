@@ -19,7 +19,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableRow,
 } from "@/components/ui/table";
 import { GenericService } from "@/core/services/GenericService";
@@ -33,19 +32,21 @@ import api from "@/core/api/axios";
 import type { MainResponse } from "@/core/api/responses/PaginatedResponse";
 import type { MainServiceModel } from "@/features/main-services/models/main-service-model";
 import { useEffect, useMemo, useState } from "react";
+import type { SubTotalModel } from "@/features/sub-services/models/sub-total-model";
+import type { ISingleResponse } from "@/core/api/responses/ISingleResponse";
+import { Button } from "@/components/ui/button";
 
 export function SubServicePage() {
   const data: SubServiceModel[] = [];
 
-  const {id} = useParams<{ id: string }>(); //url den id yi al
+  const { id } = useParams<{ id: string }>(); //url den id yi al
 
   const [mainService, setMainService] = useState<MainServiceModel | null>(null);
+  const [subTotal, setSubTotal] = useState<SubTotalModel | null>(null);
 
   //table column fonksiyonellikleri
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
-    []
-  );
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
@@ -67,7 +68,24 @@ export function SubServicePage() {
       console.error("Main service ID is not provided.");
       return;
     }
-    mainServiceApiService.getById(id)
+    api
+      .get<ISingleResponse<SubTotalModel>>(`mainservice/sub-totals/${id}`)
+      .then((res) => {
+        if (res.data.succeeded) {
+          setSubTotal(res.data.data ?? null);
+        } else {
+          console.error("Failed to fetch sub total data.");
+        }
+      });
+  }, [id]);
+
+  useEffect(() => {
+    if (!id) {
+      console.error("Main service ID is not provided.");
+      return;
+    }
+    mainServiceApiService
+      .getById(id)
       .then((res) => {
         if (res.succeeded && res.data) {
           setMainService(res.data);
@@ -78,7 +96,7 @@ export function SubServicePage() {
       .catch((error) => {
         console.error("Error fetching main service data:", error);
       });
-  }, [id, mainServiceApiService])
+  }, [id, mainServiceApiService]);
 
   const fetchSubServices = React.useCallback(async () => {
     const res = await api.get<MainResponse<SubServiceModel>>(
@@ -90,7 +108,7 @@ export function SubServicePage() {
   }, [id]);
 
   const subServiceColumns = useMemo(
-    () => SubServiceColumns(subServiceApiService,  fetchSubServices),
+    () => SubServiceColumns(subServiceApiService, fetchSubServices),
     [subServiceApiService, fetchSubServices]
   );
 
@@ -122,66 +140,88 @@ export function SubServicePage() {
       <div className="rounded-md border">
         {mainService && (
           <div className="p-4 border-b">
-            <h4 className="text-lg font-semibold">{mainService.vehicle?.plate} {mainService.vehicle?.brand} 
-               {mainService.vehicle?.model} Servis Kartı Detayları</h4>
-            <p style={{fontSize: 'small'}}>{mainService.description}</p>
-            <p style={{fontSize: 'small'}}>Servis Durumu: {mainService.mainServiceStatus == 0 ? "Açık" : mainService.mainServiceStatus == 1 ? "Hazırlanıyor" : mainService.mainServiceStatus == 2 ? "Tamamlandı" : mainService.mainServiceStatus == 3 ? "İptal Edildi" : null}</p>
+            <h4 className="text-lg font-semibold">
+              {mainService.vehicle?.plate} {mainService.vehicle?.brand}
+              {mainService.vehicle?.model} Servis Kartı Detayları
+            </h4>
+            <p style={{ fontSize: "small" }}>{mainService.description}</p>
+            <p style={{ fontSize: "small" }}>
+              Servis Durumu:{" "}
+              {mainService.mainServiceStatus == 0
+                ? "Açık"
+                : mainService.mainServiceStatus == 1
+                ? "Hazırlanıyor"
+                : mainService.mainServiceStatus == 2
+                ? "Tamamlandı"
+                : mainService.mainServiceStatus == 3
+                ? "İptal Edildi"
+                : null}
+            </p>
           </div>
         )}
         <div className="p-2">
-           <CreateSubServiceDrawer key={id} onSubServiceCreated={fetchSubServices} mainServiceId={id ?? ""} />
+          <CreateSubServiceDrawer
+            key={id}
+            onSubServiceCreated={fetchSubServices}
+            mainServiceId={id ?? ""}
+          />
         </div>
         <Table>
-        <TableHeaders table={table} />
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext()
-                    )}
-                  </TableCell>
-                ))}
+          <TableHeaders table={table} />
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={subServiceColumns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell
-                colSpan={subServiceColumns.length}
-                className="h-24 text-center"
-              >
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-        <TableFooter>
-          {table.getCanPreviousPage() && (
-            <button
-              className="btn btn-secondary"
-              onClick={() => table.previousPage()}
-            >
-              Previous
-            </button>
-          )}
-          {table.getCanNextPage() && (
-            <button
-              className="btn btn-secondary"
-              onClick={() => table.nextPage()}
-            >
-              Next
-            </button>
-          )}
-        </TableFooter>
+            )}
+          </TableBody>
         </Table>
       </div>
       <Pagination table={table} />
+      {mainService && (
+        <>
+          <div className="p-4 border-b ml-4 mr-4" style={{ float: "left" }}>
+            <p style={{ fontSize: "small" }}>
+              İşlemlerin tümünü tamamladıysanız onayla butonuna basınız. Böylece tutarlar
+              işlem kartına ve cari harekete yansıyacaktır.
+            </p>
+          </div>
+          <div className="p-4 border-b ml-4 mr-4" style={{ float: "right" }}>
+            <p style={{ fontSize: "small" }}>
+              Toplam İndirim: {subTotal?.totalDiscount}
+            </p>
+            <p style={{ fontSize: "small" }}>
+              Toplam Maliyet: {subTotal?.totalCost}
+            </p>
+            <p style={{ fontSize: "small" }}>
+              Toplam Tutar: {subTotal?.totalPrice}
+            </p>
+
+            <Button className="mt-10" style={{ float: "right" }} value={"Onayla"}>Onayla</Button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
