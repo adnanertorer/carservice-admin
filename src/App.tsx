@@ -10,6 +10,7 @@ import { SupplierPage } from "./pages/suppliers/supplier-page";
 import { EmployeePage } from "./pages/employees/employee-page";
 import { CustomerVehiclePage } from "./pages/customer-vehicles/customer-vehicle-page";
 import { MainServicePage } from "./pages/main-services/main-service-page";
+import { SubServicePage } from "./pages/sub-services/sub-service-page";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             <Route path="/customers/:customerId/vehicles" element={<CustomerVehiclePage />} />
             <Route path="/suppliers" element={<SupplierPage />} />
             <Route path="/main-services" element={<MainServicePage />} />
+            <Route path="/main-services/:id/sub-services" element={<SubServicePage />} />
             </Route>
           </Routes>
         </BrowserRouter>

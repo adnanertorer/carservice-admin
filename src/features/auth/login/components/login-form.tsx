@@ -28,8 +28,6 @@ export function LoginForm({
         setFieldValue,
         validate,
         getFieldErrors,
-        getFirstError,
-        isValid,
         form
       } = useFormManager(
         {

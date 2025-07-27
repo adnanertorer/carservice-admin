@@ -1,23 +1,27 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { IconRowRemove, IconSettingsPlus } from "@tabler/icons-react";
-import { toast } from "react-toastify";
-import type { GenericService } from "@/core/services/GenericService";
 import type { MainServiceModel } from "../models/main-service-model";
+import type { NavigateFunction } from "react-router-dom";
 
 export const MainServiceColumns = (
-  service: GenericService<MainServiceModel>,
-  onMainServiceUpdated?: () => Promise<void>): ColumnDef<MainServiceModel>[] => [
-    {
+  navigate?: NavigateFunction,
+  onDeleteRequest?: (item: MainServiceModel) => void,
+): ColumnDef<MainServiceModel>[] => [
+  {
     accessorKey: "vehicle.brand",
     header: "Marka",
-    cell: ({ row }) => <div className="capitalize">{row.original.vehicle?.brand}</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">{row.original.vehicle?.brand}</div>
+    ),
   },
   {
     accessorKey: "vehicle.model",
     header: "Model",
-    cell: ({ row }) => <div className="capitalize">{row.original.vehicle?.model}</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">{row.original.vehicle?.model}</div>
+    ),
   },
-   {
+  {
     accessorKey: "description",
     header: "Açıklama",
     cell: ({ row }) => row.getValue("description"),
@@ -27,7 +31,7 @@ export const MainServiceColumns = (
     header: "Maliyet",
     cell: ({ row }) => row.getValue("cost"),
   },
-   {
+  {
     accessorKey: "mainServiceStatus",
     header: "Servis Durumu",
     cell: ({ row }) => {
@@ -35,7 +39,15 @@ export const MainServiceColumns = (
       console.log("Service Status:", status);
       return (
         <div className="capitalize">
-          {status == 0 ? "Açık" : status == 1 ? "Hazırlanıyor" : status == 2 ? "Tamamlandı" : status == 3 ? "İptal Edildi" : null}
+          {status == 0
+            ? "Açık"
+            : status == 1
+            ? "Hazırlanıyor"
+            : status == 2
+            ? "Tamamlandı"
+            : status == 3
+            ? "İptal Edildi"
+            : null}
         </div>
       );
     },
@@ -45,7 +57,8 @@ export const MainServiceColumns = (
     header: "Servis Tarihi",
     cell: ({ row }) => {
       const dateValue = row.getValue("serviceDate");
-      const date = dateValue instanceof Date ? dateValue : new Date(dateValue as string);
+      const date =
+        dateValue instanceof Date ? dateValue : new Date(dateValue as string);
       return date.toLocaleDateString("tr-TR", {
         year: "numeric",
         month: "2-digit",
@@ -61,24 +74,15 @@ export const MainServiceColumns = (
       return (
         <div className="flex items-center gap-6">
           {mainService.mainServiceStatus === 0 && (
-            <IconSettingsPlus></IconSettingsPlus>
-          )}
-          <IconRowRemove
-            onClick={async () => {
-              const response = await service.remove(mainService.id);
-              console.log("Kayıt silme yanıtı:", response);
-              if (response.succeeded) {
-                toast.success("Kayıt silindi!");
-                if (onMainServiceUpdated) {
-                  await onMainServiceUpdated();
+            <IconSettingsPlus
+              onClick={() => {
+                if (navigate) {
+                  navigate(`/main-services/${mainService.id}/sub-services`);
                 }
-              } else {
-                toast.error(
-                  response.errors?.[0] || "Kayıt silinirken bir hata oluştu!"
-                );
-              }
-            }}
-          ></IconRowRemove>
+              }}
+            ></IconSettingsPlus>
+          )}
+           <IconRowRemove onClick={() => onDeleteRequest?.(mainService)}></IconRowRemove>
         </div>
       );
     },

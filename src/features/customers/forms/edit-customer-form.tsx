@@ -88,7 +88,6 @@ export function EditCustomerForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(form.getValues());
     onSubmit(form.getValues() as CustomerModel);
   }
 
