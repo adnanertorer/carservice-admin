@@ -1,12 +1,23 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { IconRowRemove, IconSettingsPlus } from "@tabler/icons-react";
+import {
+  IconListDetails,
+  IconRowRemove,
+  IconSettingsPlus,
+} from "@tabler/icons-react";
 import type { MainServiceModel } from "../models/main-service-model";
 import type { NavigateFunction } from "react-router-dom";
 
 export const MainServiceColumns = (
   navigate?: NavigateFunction,
-  onDeleteRequest?: (item: MainServiceModel) => void,
+  onDeleteRequest?: (item: MainServiceModel) => void
 ): ColumnDef<MainServiceModel>[] => [
+  {
+    accessorKey: "vehicle.plate",
+    header: "Plaka",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.original.vehicle?.plate}</div>
+    ),
+  },
   {
     accessorKey: "vehicle.brand",
     header: "Marka",
@@ -74,15 +85,28 @@ export const MainServiceColumns = (
       return (
         <div className="flex items-center gap-6">
           {mainService.mainServiceStatus === 0 && (
-            <IconSettingsPlus
+            <>
+              <IconSettingsPlus
+                onClick={() => {
+                  if (navigate) {
+                    navigate(`/main-services/${mainService.id}/sub-services`);
+                  }
+                }}
+              ></IconSettingsPlus>
+              <IconRowRemove
+                onClick={() => onDeleteRequest?.(mainService)}
+              ></IconRowRemove>
+            </>
+          )}
+          {mainService.mainServiceStatus !== 0 && (
+            <IconListDetails
               onClick={() => {
                 if (navigate) {
                   navigate(`/main-services/${mainService.id}/sub-services`);
                 }
               }}
-            ></IconSettingsPlus>
+            ></IconListDetails>
           )}
-           <IconRowRemove onClick={() => onDeleteRequest?.(mainService)}></IconRowRemove>
         </div>
       );
     },

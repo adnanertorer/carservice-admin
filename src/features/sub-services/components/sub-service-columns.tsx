@@ -74,8 +74,11 @@ export const SubServiceColumns = (
     enableHiding: false,
     cell: ({ row }) => {
       const subService = row.original;
+      console.log("SubService:", subService);
       return (
         <div className="flex items-center gap-6">
+          {subService.mainService?.mainServiceStatus === 0 && (
+          <>
           <EditSubServiceDrawer
             state={subService}
             onSubServiceUpdated={onSubServiceUpdated}
@@ -87,7 +90,6 @@ export const SubServiceColumns = (
                 return;
               }
               const response = await service.remove(subService.id);
-              console.log("Kayıt silme yanıtı:", response);
               if (response.succeeded) {
                 toast.success("Kayıt silindi!");
                 if (onSubServiceUpdated) {
@@ -100,6 +102,7 @@ export const SubServiceColumns = (
               }
             }}
           ></IconRowRemove>
+          </>)}<></>
         </div>
       );
     },

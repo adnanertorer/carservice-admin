@@ -15,18 +15,13 @@ import type {
   VisibilityState,
 } from "@tanstack/react-table";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { GenericService } from "@/core/services/GenericService";
 import { TableHeaders } from "@/components/table-header";
 import { Pagination } from "@/components/pagination";
 import type { SubServiceModel } from "@/features/sub-services/models/sub-service-model";
 import { SubServiceColumns } from "@/features/sub-services/components/sub-service-columns";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { CreateSubServiceDrawer } from "@/features/sub-services/components/create-subservice-drawer";
 import api from "@/core/api/axios";
 import type { MainResponse } from "@/core/api/responses/PaginatedResponse";
@@ -35,9 +30,11 @@ import { useEffect, useMemo, useState } from "react";
 import type { SubTotalModel } from "@/features/sub-services/models/sub-total-model";
 import type { ISingleResponse } from "@/core/api/responses/ISingleResponse";
 import { Button } from "@/components/ui/button";
+import { toast } from "react-toastify";
 
 export function SubServicePage() {
   const data: SubServiceModel[] = [];
+  const navigate = useNavigate();
 
   const { id } = useParams<{ id: string }>(); //url den id yi al
 
@@ -107,6 +104,30 @@ export function SubServicePage() {
     }
   }, [id]);
 
+  console.log(mainService);
+
+  const approveService = async () => {
+    if (mainService) {
+      const updatedMainService: MainServiceModel = {
+        cost: subTotal?.totalCost ?? 0,
+        description: mainService.description,
+        id: mainService.id,
+        mainServiceStatus: 2, // Assuming 2 is the status for "Completed"
+        serviceDate: mainService.serviceDate,
+        vehicleId: mainService.vehicleId,
+      };
+      const res = await mainServiceApiService.update(updatedMainService);
+      if (res.succeeded) {
+        toast.success(
+          "İşlemler başarıyla onaylandı. İşlem tutarları güncellendi."
+        );
+        navigate("/main-services");
+      } else {
+        console.error("Failed to approve main service.");
+      }
+    }
+  };
+
   const subServiceColumns = useMemo(
     () => SubServiceColumns(subServiceApiService, fetchSubServices),
     [subServiceApiService, fetchSubServices]
@@ -160,11 +181,13 @@ export function SubServicePage() {
           </div>
         )}
         <div className="p-2">
-          <CreateSubServiceDrawer
-            key={id}
-            onSubServiceCreated={fetchSubServices}
-            mainServiceId={id ?? ""}
-          />
+          {mainService && mainService.mainServiceStatus === 0 && (
+            <CreateSubServiceDrawer
+              key={id}
+              onSubServiceCreated={fetchSubServices}
+              mainServiceId={id ?? ""}
+            />
+          )}
         </div>
         <Table>
           <TableHeaders table={table} />
@@ -202,10 +225,12 @@ export function SubServicePage() {
       {mainService && (
         <>
           <div className="p-4 border-b ml-4 mr-4" style={{ float: "left" }}>
-            <p style={{ fontSize: "small" }}>
-              İşlemlerin tümünü tamamladıysanız onayla butonuna basınız. Böylece tutarlar
-              işlem kartına ve cari harekete yansıyacaktır.
-            </p>
+            {mainService.mainServiceStatus === 0 && (
+              <p style={{ fontSize: "small" }}>
+                İşlemlerin tümünü tamamladıysanız onayla butonuna basınız.
+                Böylece tutarlar işlem kartına ve cari harekete yansıyacaktır.
+              </p>
+            )}
           </div>
           <div className="p-4 border-b ml-4 mr-4" style={{ float: "right" }}>
             <p style={{ fontSize: "small" }}>
@@ -217,8 +242,16 @@ export function SubServicePage() {
             <p style={{ fontSize: "small" }}>
               Toplam Tutar: {subTotal?.totalPrice}
             </p>
-
-            <Button className="mt-10" style={{ float: "right" }} value={"Onayla"}>Onayla</Button>
+            {mainService.mainServiceStatus === 0 && (
+              <Button
+                className="mt-10"
+                style={{ float: "right" }}
+                value={"Onayla"}
+                onClick={approveService}
+              >
+                Onayla
+              </Button>
+            )}
           </div>
         </>
       )}
