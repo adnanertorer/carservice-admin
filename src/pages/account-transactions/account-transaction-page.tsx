@@ -20,6 +20,7 @@ import { TableHeaders } from "@/components/table-header";
 import type { AccountTransactionModel } from "@/features/account-transactions/models/account-transaction-model";
 import { TransactionColumns } from "@/features/account-transactions/components/transaction-columns";
 import { FilterForm } from "@/features/account-transactions/components/filter-form";
+import { TransactionCard } from "@/features/account-transactions/components/transaction-card";
 import type { TransactionTotal } from "@/features/account-transactions/models/transaction-total";
 import api from "@/core/api/axios";
 import type { ISingleResponse } from "@/core/api/responses/ISingleResponse";
@@ -157,7 +158,9 @@ export function AccountTransactionPage() {
           );
         }}
       />
-      <div className="rounded-md border mt-4">
+      
+      {/* Desktop Tablo Görünümü */}
+      <div className="hidden md:block rounded-md border mt-4">
         <div className="p-2"></div>
         <Table>
           <TableHeaders table={table} />
@@ -190,6 +193,24 @@ export function AccountTransactionPage() {
             )}
           </TableBody>
         </Table>
+      </div>
+
+      {/* Mobil Card Görünümü */}
+      <div className="md:hidden mt-4">
+        {transactions.length > 0 ? (
+          <div className="space-y-3">
+            {transactions.map((transaction) => (
+              <TransactionCard 
+                key={transaction.id} 
+                transaction={transaction} 
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8 text-muted-foreground">
+            Kayıt bulunamadı.
+          </div>
+        )}
       </div>
       
       {/* Pagination ve Toplamlar */}
