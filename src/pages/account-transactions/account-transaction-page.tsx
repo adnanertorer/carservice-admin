@@ -16,16 +16,17 @@ import type {
 } from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { GenericService } from "@/core/services/GenericService";
 import { TableHeaders } from "@/components/table-header";
-import { Pagination } from "@/components/pagination";
 import type { AccountTransactionModel } from "@/features/account-transactions/models/account-transaction-model";
 import { TransactionColumns } from "@/features/account-transactions/components/transaction-columns";
 import { FilterForm } from "@/features/account-transactions/components/filter-form";
+import { TransactionCard } from "@/features/account-transactions/components/transaction-card";
 import type { TransactionTotal } from "@/features/account-transactions/models/transaction-total";
 import api from "@/core/api/axios";
 import type { ISingleResponse } from "@/core/api/responses/ISingleResponse";
-import type { MainResponse } from "@/core/api/responses/PaginatedResponse";
+import type { MainResponse, PaginatedResponse } from "@/core/api/responses/PaginatedResponse";
+import { GenericPagination } from "@/components/generic-pagination";
+import { usePagination } from "@/hooks/use-pagination";
 
 export function AccountTransactionPage() {
   const data: AccountTransactionModel[] = [];
@@ -40,11 +41,8 @@ export function AccountTransactionPage() {
   const [transactions, setTransactions] =
     React.useState<AccountTransactionModel[]>(data);
   const [totals, setTotals] = React.useState<TransactionTotal>();
-
-  const transactionService = React.useMemo(
-    () => new GenericService<AccountTransactionModel>("accounttransaction"),
-    []
-  );
+  const [paginationData, setPaginationData] = React.useState<PaginatedResponse<AccountTransactionModel> | null>(null);
+  const { currentPage, pageSize, handlePageChange, handlePageSizeChange } = usePagination(5);
 
   const getTotals = (
     customerId?: string,
@@ -64,62 +62,69 @@ export function AccountTransactionPage() {
       .then((res) => {
         console.log("Totals response:", res.data);
         setTotals(res.data.data);
-        transactionsByFilter(customerId, startDate, endDate);
+        transactionsByFilter(customerId, startDate, endDate, currentPage, pageSize);
       })
       .catch((error) => {
         console.error("Error fetching totals:", error);
       });
   };
 
-  const transactionsByFilter = (
+  const transactionsByFilter = React.useCallback((
     customerId?: string,
     startDate?: string,
-    endDate?: string
+    endDate?: string,
+    page: number = currentPage,
+    size: number = pageSize
   ) => {
     const params = new URLSearchParams();
     if (customerId) params.append("customerId", customerId);
     if (startDate) params.append("startDate", startDate);
     if (endDate) params.append("endDate", endDate);
 
-    params.append("pageSize", "50");
-    params.append("pageIndex", "0");
+    params.append("pageSize", size.toString());
+    params.append("pageIndex", page.toString());
     params.append("IsAllItems", "false");
+
+    console.log("API Call Parameters:", params.toString());
 
     api
       .get<MainResponse<AccountTransactionModel>>(
         `/accounttransaction/list?${params.toString()}`
       )
       .then((res) => {
+        console.log("Transactions response:", res.data);
         if (res.data.succeeded && res.data.data?.items) {
+          setPaginationData(res.data.data);
           setTransactions(res.data.data?.items);
+          console.log("Pagination data set:", res.data.data);
         }
       })
       .catch((error) => {
         console.error("Error fetching transactions:", error);
       });
+  }, [currentPage, pageSize]);
+
+  const fetchTransactions = React.useCallback(() => {
+    transactionsByFilter(undefined, undefined, undefined, currentPage, pageSize);
+  }, [currentPage, pageSize, transactionsByFilter]);
+
+  const onPageChange = (page: number) => {
+    handlePageChange(page);
+    transactionsByFilter(undefined, undefined, undefined, page, pageSize);
   };
 
-  const fetchTransactions = React.useCallback(async () => {
-    const res = await transactionService.getByFilter(
-      undefined,
-      undefined,
-      0,
-      50,
-      "",
-      false
-    );
-    if (res.succeeded && res.data?.items) {
-      setTransactions(res.data?.items);
-    }
-  }, [transactionService]);
+  const onPageSizeChange = (newPageSize: number) => {
+    handlePageSizeChange(newPageSize);
+    transactionsByFilter(undefined, undefined, undefined, 0, newPageSize);
+  };
 
   const transactionColumns = React.useMemo(() => TransactionColumns(), []);
 
   React.useEffect(() => {
     fetchTransactions();
     getTotals();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchTransactions]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchTransactions, currentPage, pageSize]);
 
   const table = useReactTable<AccountTransactionModel>({
     data: transactions,
@@ -144,7 +149,8 @@ export function AccountTransactionPage() {
     <div className="w-full">
       <FilterForm
         onFilter={(values) => {
-          console.log(values);
+          // Filtre değiştiğinde ilk sayfaya dön
+          handlePageChange(0);
           getTotals(
             values.customerId ?? undefined,
             values.startDate ?? undefined,
@@ -152,7 +158,9 @@ export function AccountTransactionPage() {
           );
         }}
       />
-      <div className="rounded-md border">
+      
+      {/* Desktop Tablo Görünümü */}
+      <div className="hidden md:block rounded-md border mt-4">
         <div className="p-2"></div>
         <Table>
           <TableHeaders table={table} />
@@ -186,18 +194,51 @@ export function AccountTransactionPage() {
           </TableBody>
         </Table>
       </div>
-      <Pagination table={table} />
-      <div className="p-4 border-b ml-4 mr-4" style={{ float: "right" }}>
-            <p style={{ fontSize: "small" }}>
-              Toplam Borç: {totals?.totalDebt}
-            </p>
-            <p style={{ fontSize: "small" }}>
-              Toplam Alacak: {totals?.totalClaim}
-            </p>
-            <p style={{ fontSize: "small" }}>
-              Net: {totals?.total}
-            </p>
+
+      {/* Mobil Card Görünümü */}
+      <div className="md:hidden mt-4">
+        {transactions.length > 0 ? (
+          <div className="space-y-3">
+            {transactions.map((transaction) => (
+              <TransactionCard 
+                key={transaction.id} 
+                transaction={transaction} 
+              />
+            ))}
           </div>
+        ) : (
+          <div className="text-center py-8 text-muted-foreground">
+            Kayıt bulunamadı.
+          </div>
+        )}
+      </div>
+      
+      {/* Pagination ve Toplamlar */}
+      <div className="mt-4 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        <div className="order-2 lg:order-1">
+          <div className="text-sm space-y-1">
+            <p>Toplam Borç: {totals?.totalDebt}</p>
+            <p>Toplam Alacak: {totals?.totalClaim}</p>
+            <p>Net: {totals?.total}</p>
+          </div>
+        </div>
+        
+        <div className="order-1 lg:order-2 w-full lg:w-auto">
+          {paginationData ? (
+            <GenericPagination
+              data={paginationData}
+              onPageChange={onPageChange}
+              onPageSizeChange={onPageSizeChange}
+              pageSizeOptions={[5, 10, 15, 20, 25, 30, 35, 40, 45, 50]}
+              showPageSizeSelector={true}
+              showInfo={true}
+            />
+          ) : (
+            <div className="text-sm text-gray-500">Sayfalama verisi yükleniyor...</div>
+          )}
+          
+        </div>
+      </div>
     </div>
   );
 }

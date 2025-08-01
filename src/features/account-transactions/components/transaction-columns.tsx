@@ -29,7 +29,6 @@ export const TransactionColumns = (
     header: "Hareket Türü",
     cell: ({ row }) => {
       const status = row.original.transactionType;
-      console.log("Service Status:", status);
       return (
         <div className="capitalize">
           {status == 0

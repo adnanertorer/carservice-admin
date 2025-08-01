@@ -12,7 +12,7 @@ interface PaginationProps<T> {
   currentIndex: number;
 }
 
-export function CustomPagination<T>({ table, setPageIndex, setPageSize, currentIndex }: PaginationProps<T>) {
+export function CustomPagination<T>({ table, setPageIndex, currentIndex }: PaginationProps<T>) {
   return (
     <>
       <Pagination table={table} />
