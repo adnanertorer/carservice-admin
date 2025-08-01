@@ -48,6 +48,7 @@ export function CreateCustomerForm({
         setCities(res.data?.items);
       }
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

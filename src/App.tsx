@@ -11,6 +11,7 @@ import { EmployeePage } from "./pages/employees/employee-page";
 import { CustomerVehiclePage } from "./pages/customer-vehicles/customer-vehicle-page";
 import { MainServicePage } from "./pages/main-services/main-service-page";
 import { SubServicePage } from "./pages/sub-services/sub-service-page";
+import { AccountTransactionPage } from "./pages/account-transactions/account-transaction-page";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
             <Route path="/suppliers" element={<SupplierPage />} />
             <Route path="/main-services" element={<MainServicePage />} />
             <Route path="/main-services/:id/sub-services" element={<SubServicePage />} />
+            <Route path="/account-transactions" element={<AccountTransactionPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

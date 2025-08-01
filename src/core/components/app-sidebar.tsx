@@ -63,7 +63,7 @@ const data = {
     },
     {
       title: "Cari Hareketler",
-      url: "#",
+      url: "/account-transactions",
       icon: IconMoneybagPlus,
     },
   ],
