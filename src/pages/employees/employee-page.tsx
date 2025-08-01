@@ -14,7 +14,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ColumnFilterInput } from "@/components/table-filter";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TableHeaders } from "@/components/table-header";
-import { CustomPagination } from "@/core/components/pagination";
 import type { EmployeeModel } from "@/features/employees/models/employee-model";
 import { employeeColumns } from "@/features/employees/components/employee-columns";
 import { CreateEmployeeDrawer } from "@/features/employees/components/create-employee-drawer";
@@ -27,24 +26,20 @@ export function EmployeePage() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
-  const [pageIndex, setPageIndex] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+
 
   const employeeService = useMemo(
     () => new GenericService<EmployeeModel>("employee"),
     []
   );
 
-  const pageIndexChange = useCallback((pageIndex: number) => {
-    setPageIndex(pageIndex);
-  }, []);
 
   const fetchEmployees = useCallback(async () => {
     const response = await employeeService.getByFilter(
       undefined,
       undefined,
-      pageIndex,
-      pageSize,
+      0,
+      10,
       "",
       false
     );
@@ -60,9 +55,8 @@ export function EmployeePage() {
 
   useEffect(() => {
     fetchEmployees();
-  },[fetchEmployees, pageIndex]);
+  },[fetchEmployees]);
 
-  console.log("pageIndex", pageIndex);
 
   const columns = useMemo(
     () => employeeColumns(employeeService, fetchEmployees),
@@ -135,9 +129,6 @@ export function EmployeePage() {
           </TableBody>
         </Table>
       </div>
-      <CustomPagination table={table} setPageIndex={pageIndexChange} setPageSize={setPageSize}
-      currentIndex={0} 
-       />
     </div>
   );
 }

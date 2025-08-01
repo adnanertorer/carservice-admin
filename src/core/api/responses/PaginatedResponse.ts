@@ -3,6 +3,7 @@ export interface PaginatedResponse<T> {
     pages: number;
     count: number;
     size: number;
+    index: number;
     hasNext: boolean;
     hasPrevious: boolean;
   }
