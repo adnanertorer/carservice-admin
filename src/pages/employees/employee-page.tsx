@@ -19,6 +19,10 @@ import { employeeColumns } from "@/features/employees/components/employee-column
 import { CreateEmployeeDrawer } from "@/features/employees/components/create-employee-drawer";
 import { ConfirmDialogShadCn } from "@/core/components/dialogs/alert-dialog";
 import { toast } from "react-toastify";
+import type { MainResponse, PaginatedResponse } from "@/core/api/responses/PaginatedResponse";
+import { usePagination } from "@/hooks/use-pagination";
+import { GenericPagination } from "@/components/generic-pagination";
+import api from "@/core/api/axios";
 
 export function EmployeePage() {
   const data: EmployeeModel[] = [];
@@ -27,6 +31,12 @@ export function EmployeePage() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
+
+  //pagination islemleri
+  const [paginationData, setPaginationData] =
+    useState<PaginatedResponse<EmployeeModel> | null>(null);
+  const { currentPage, pageSize, handlePageChange, handlePageSizeChange } =
+    usePagination(5);
 
   //satırlardan gelen secili kayitı silmek için
   const [selectedForDelete, setSelectedForDelete] =
@@ -48,28 +58,51 @@ export function EmployeePage() {
     []
   );
 
+  const employeesByFilter = useCallback(
+    async (
+      pageNumber: number,
+      pageSize: number,
+      searchText: string,
+      isAll: boolean
+    ) => {
+
+      const params = new URLSearchParams();
+
+    params.append("pageSize", pageSize.toString());
+    params.append("pageIndex", pageNumber.toString());
+    params.append("IsAllItems", isAll.toString());
+    params.append("search", searchText);
+
+      const response = await api.get<MainResponse<EmployeeModel>>(`/employee/list?${params.toString()}`);
+
+      if (
+        response.data.succeeded &&
+        response.data.data?.items
+      ) {
+        setEmployees(response.data.data?.items);
+        setPaginationData(response.data.data);
+      }
+    },
+    []
+  );
+
   const fetchEmployees = useCallback(async () => {
-    const response = await employeeService.getByFilter(
-      undefined,
-      undefined,
-      0,
-      10,
-      "",
-      false
-    );
-    if (
-      response.succeeded &&
-      response.data?.items &&
-      response.data?.items.length > 0
-    ) {
-      setEmployees(response.data?.items);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    employeesByFilter(currentPage, pageSize, "", false);
+  }, [currentPage, pageSize, employeesByFilter]);
 
   useEffect(() => {
     fetchEmployees();
   }, [fetchEmployees]);
+
+  const onPageChange = (page: number) => {
+    handlePageChange(page);
+    employeesByFilter(currentPage, pageSize, "", false);
+  };
+
+  const onPageSizeChange = (newPageSize: number) => {
+    handlePageSizeChange(newPageSize);
+    employeesByFilter(currentPage, pageSize, "", false);
+  };
 
   const columns = useMemo(
     () =>
@@ -170,6 +203,24 @@ export function EmployeePage() {
             }}
           />
         )}
+      </div>
+      <div className="mt-4 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        <div className="order-1 lg:order-2 w-full lg:w-auto">
+          {paginationData ? (
+            <GenericPagination
+              data={paginationData}
+              onPageChange={onPageChange}
+              onPageSizeChange={onPageSizeChange}
+              pageSizeOptions={[5, 10, 15, 20, 25, 30, 35, 40, 45, 50]}
+              showPageSizeSelector={true}
+              showInfo={true}
+            />
+          ) : (
+            <div className="text-sm text-gray-500">
+              Sayfalama verisi yükleniyor...
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -41,6 +41,8 @@ export function AccountTransactionPage() {
   const [transactions, setTransactions] =
     React.useState<AccountTransactionModel[]>(data);
   const [totals, setTotals] = React.useState<TransactionTotal>();
+
+  //pagination islemleri
   const [paginationData, setPaginationData] = React.useState<PaginatedResponse<AccountTransactionModel> | null>(null);
   const { currentPage, pageSize, handlePageChange, handlePageSizeChange } = usePagination(5);
 
@@ -85,18 +87,14 @@ export function AccountTransactionPage() {
     params.append("pageIndex", page.toString());
     params.append("IsAllItems", "false");
 
-    console.log("API Call Parameters:", params.toString());
-
     api
       .get<MainResponse<AccountTransactionModel>>(
         `/accounttransaction/list?${params.toString()}`
       )
       .then((res) => {
-        console.log("Transactions response:", res.data);
         if (res.data.succeeded && res.data.data?.items) {
           setPaginationData(res.data.data);
           setTransactions(res.data.data?.items);
-          console.log("Pagination data set:", res.data.data);
         }
       })
       .catch((error) => {
