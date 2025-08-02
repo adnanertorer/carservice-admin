@@ -1,12 +1,15 @@
-import type { GenericService } from "@/core/services/GenericService";
 import type { CustomerVehicleModel } from "../models/customer-vehicle-model";
 import type { ColumnDef } from "@tanstack/react-table";
 import { toast } from "react-toastify";
 import { IconRowRemove } from "@tabler/icons-react";
 import { EditCustomerVehicleDrawer } from "./edit-vehicle-drawer";
 import { CreateMainServiceDrawer } from "@/features/main-services/components/create-mainservice-drawer";
+import { getFuelType } from "@/core/enums/carServiceEnum";
+import type { NavigateFunction } from "react-router-dom";
 
-export const vehicleColumns = (service: GenericService<CustomerVehicleModel>, onVehicleUpdated?: () => Promise<void>) :
+export const vehicleColumns = ( 
+    onVehicleUpdated?: () => Promise<void>, navigate?: NavigateFunction,
+onDeleteRequest?: (item: CustomerVehicleModel) => void) :
 ColumnDef<CustomerVehicleModel>[]  => [
     {
         accessorKey: 'brand',
@@ -41,7 +44,14 @@ ColumnDef<CustomerVehicleModel>[]  => [
     {
         accessorKey: 'fuelType',
         header: 'Yakıt Tipi',
-        cell: ({ row }) => row.getValue('fuelType'),
+        cell: ({ row }) => {
+            const fuelType = row.original.fuelTypeId;
+            if(fuelType){
+                return getFuelType(fuelType);
+            }else{
+                return "";
+            }
+        },
     },
     {
         accessorKey: 'serialNumber',
@@ -60,19 +70,13 @@ ColumnDef<CustomerVehicleModel>[]  => [
                         onVehicleUpdated={onVehicleUpdated} />
                     <IconRowRemove
                         className="cursor-pointer"
-                        onClick={() => {
-                            service.remove(vehicle.id)
-                                .then(() => {
-                                    toast.success('Araç başarıyla silindi.');
-                                    onVehicleUpdated?.();
-                                })
-                                .catch(() => {
-                                    toast.error('Araç silinirken bir hata oluştu.');
-                                });
-                        }}
+                        onClick={() => onDeleteRequest?.(vehicle)}
                     />
                     <CreateMainServiceDrawer vehicleId={vehicle.id} onMainServiceCreated={async () => {
                         toast.success('Ana servis başarıyla oluşturuldu.');
+                        if (navigate) {
+                            navigate(`/main-services`);
+                        }
                     }} />
                 </div>
             );

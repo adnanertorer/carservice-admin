@@ -1,37 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
 import type { AccountTransactionModel } from "../models/account-transaction-model";
+import { formatCurrency, formatDate } from "@/core/components/tools/stringOps";
+import { getTransactionType } from "@/core/enums/carServiceEnum";
 
 interface TransactionCardProps {
   transaction: AccountTransactionModel;
 }
 
 export function TransactionCard({ transaction }: TransactionCardProps) {
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('tr-TR', {
-      style: 'currency',
-      currency: 'TRY',
-      minimumFractionDigits: 2,
-    }).format(amount);
-  };
-
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('tr-TR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
-  };
-
-  const getTransactionType = (type: number) => {
-    switch (type) {
-      case 1:
-        return { label: "Gelir", color: "text-green-600" };
-      case 2:
-        return { label: "Gider", color: "text-red-600" };
-      default:
-        return { label: "Diğer", color: "text-gray-600" };
-    }
-  };
 
   const transactionType = getTransactionType(transaction.transactionType);
 

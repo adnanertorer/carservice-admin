@@ -31,6 +31,7 @@ import type { SubTotalModel } from "@/features/sub-services/models/sub-total-mod
 import type { ISingleResponse } from "@/core/api/responses/ISingleResponse";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
+import { ConfirmDialogShadCn } from "@/core/components/dialogs/alert-dialog";
 
 export function SubServicePage() {
   const data: SubServiceModel[] = [];
@@ -47,6 +48,21 @@ export function SubServicePage() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
+  //satırlardan gelen secili kayitı silmek için
+  const [selectedForDelete, setSelectedForDelete] =
+    useState<SubServiceModel | null>(null);
+
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    setOpen(true);
+  }, [selectedForDelete]);
+
+  const closeDialog = () => {
+    setSelectedForDelete(null);
+    setOpen(false);
+  };
+
   //sub service verileri
   const [subServices, setSubServices] = useState<SubServiceModel[]>(data);
   //sub service api servisi
@@ -61,6 +77,10 @@ export function SubServicePage() {
   );
 
   useEffect(() => {
+    getTotals();
+  }, [id]);
+
+  const getTotals = React.useCallback(async () => {
     if (!id) {
       console.error("Main service ID is not provided.");
       return;
@@ -101,6 +121,7 @@ export function SubServicePage() {
     );
     if (res.data.succeeded && res.data.data?.items) {
       setSubServices(res.data.data?.items);
+      getTotals();
     }
   }, [id]);
 
@@ -112,7 +133,7 @@ export function SubServicePage() {
         cost: subTotal?.totalCost ?? 0,
         description: mainService.description,
         id: mainService.id,
-        mainServiceStatus: 2, // Assuming 2 is the status for "Completed"
+        mainServiceStatus: 2, 
         serviceDate: mainService.serviceDate,
         vehicleId: mainService.vehicleId,
       };
@@ -129,8 +150,10 @@ export function SubServicePage() {
   };
 
   const subServiceColumns = useMemo(
-    () => SubServiceColumns(subServiceApiService, fetchSubServices),
-    [subServiceApiService, fetchSubServices]
+    () => SubServiceColumns(fetchSubServices, (item) => {
+      setSelectedForDelete(item);
+    }),
+    [fetchSubServices]
   );
 
   useEffect(() => {
@@ -254,6 +277,32 @@ export function SubServicePage() {
             )}
           </div>
         </>
+      )}
+      {selectedForDelete && (
+        <ConfirmDialogShadCn
+          open={open}
+          title={`${selectedForDelete.operation} Alt Hizmet Silme`}
+          description={`Bu alt hizmeti silmek istediğinize emin misiniz?`}
+          actionText="Evet"
+          cancelText="Hayır"
+          onCancel={closeDialog}
+          onConfirm={async () => {
+            const response = await subServiceApiService.remove(
+              selectedForDelete.id!
+            );
+            console.log("Kayıt silme yanıtı:", response);
+            if (response.succeeded) {
+              toast.success("Kayıt silindi!");
+              fetchSubServices();
+            } else {
+              toast.error(
+                response.errors?.[0] || "Kayıt silinirken bir hata oluştu!"
+              );
+            }
+            setSelectedForDelete(null);
+            setOpen(false);
+          }}
+        />
       )}
     </div>
   );

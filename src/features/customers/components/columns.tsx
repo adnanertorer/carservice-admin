@@ -3,15 +3,13 @@ import type { CustomerModel } from "../models/CustomerModel";
 
 import { EditCustomerDrawer } from "./edit-drawer";
 import { IconCar, IconReportMoney, IconRowRemove } from "@tabler/icons-react";
-import { toast } from "react-toastify";
-import type { GenericService } from "@/core/services/GenericService";
 import { sortableHeader } from "@/components/sortable-header";
 import type { NavigateFunction } from "react-router-dom";
 
 export const columns = (
-  service: GenericService<CustomerModel>,
   onCustomerUpdated?: () => Promise<void>,
-  navigate?: NavigateFunction
+  navigate?: NavigateFunction,
+  onDeleteRequest?: (item: CustomerModel) => void
 ): ColumnDef<CustomerModel>[] => [
   {
     accessorKey: "name",
@@ -50,11 +48,6 @@ export const columns = (
     ),
   },
   {
-    accessorKey: "address",
-    header: ({ column }) => sortableHeader("Adres", column),
-    cell: ({ row }) => row.getValue("address"),
-  },
-  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
@@ -66,20 +59,7 @@ export const columns = (
             onCustomerUpdated={onCustomerUpdated}
           ></EditCustomerDrawer>
           <IconRowRemove
-            onClick={async () => {
-              const response = await service.remove(customer.id);
-              console.log("Kayıt silme yanıtı:", response);
-              if (response.succeeded) {
-                toast.success("Kayıt silindi!");
-                if (onCustomerUpdated) {
-                  await onCustomerUpdated();
-                }
-              } else {
-                toast.error(
-                  response.errors?.[0] || "Kayıt silinirken bir hata oluştu!"
-                );
-              }
-            }}
+            onClick={() => onDeleteRequest?.(customer)}
           ></IconRowRemove>
           <IconCar
             onClick={() => {

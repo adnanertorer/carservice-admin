@@ -15,12 +15,15 @@ import { ColumnFilterInput } from "@/components/table-filter";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TableHeaders } from "@/components/table-header";
 import { Pagination } from "@/components/pagination";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import type { CustomerVehicleModel } from "@/features/customer-vehicles/models/customer-vehicle-model";
 import { vehicleColumns } from "@/features/customer-vehicles/components/vehicle-columns";
 import { CreateVehicleDrawer } from "@/features/customer-vehicles/components/create-vehicle-drawer";
+import { ConfirmDialogShadCn } from "@/core/components/dialogs/alert-dialog";
+import { toast } from "react-toastify";
 
 export function CustomerVehiclePage() {
+  const navigate = useNavigate();
   const data: CustomerVehicleModel[] = [];
   const [sorting, setSorting] = useState<SortingState>([]);
   const [vehicles, setVehicles] = useState<CustomerVehicleModel[]>(data);
@@ -28,6 +31,21 @@ export function CustomerVehiclePage() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
   const { customerId } = useParams<{ customerId: string }>();
+
+  //satırlardan gelen secili kayitı silmek için
+  const [selectedForDelete, setSelectedForDelete] =
+    useState<CustomerVehicleModel | null>(null);
+  
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    setOpen(true);
+  }, [selectedForDelete]);
+
+  const closeDialog = () => {
+    setSelectedForDelete(null);
+    setOpen(false);
+  };
 
   const vehicleService = useMemo(
     () => new GenericService<CustomerVehicleModel>("vehicle"),
@@ -53,8 +71,10 @@ export function CustomerVehiclePage() {
   }, [customerId, vehicleService]);
 
   const columns = useMemo(
-    () => vehicleColumns(vehicleService, fetchVehicles),
-    [vehicleService, fetchVehicles]
+    () => vehicleColumns(fetchVehicles, navigate, (item) =>{
+      setSelectedForDelete(item)
+    }),
+    [fetchVehicles, navigate]
   );
 
   useEffect(() => {
@@ -89,7 +109,7 @@ export function CustomerVehiclePage() {
       />
       <div className="rounded-md border">
         <div className="p-2">
-            <CreateVehicleDrawer onVehicleCreated={fetchVehicles} />
+          <CreateVehicleDrawer onVehicleCreated={fetchVehicles} />
         </div>
         <Table>
           <TableHeaders table={table} />
@@ -124,6 +144,29 @@ export function CustomerVehiclePage() {
         </Table>
       </div>
       <Pagination table={table} />
+      {selectedForDelete && (
+        <ConfirmDialogShadCn
+          open={open}
+          title={`${selectedForDelete.plate} ${selectedForDelete.brand} ${selectedForDelete.model} Araç Silme`}
+          description={`Bu aracı silmek istediğinize emin misiniz?`}
+          actionText="Evet"
+          cancelText="Hayır"
+          onCancel={closeDialog}
+          onConfirm={async () => {
+            const response = await vehicleService.remove(selectedForDelete.id);
+            if (response.succeeded) {
+              toast.success("Kayıt silindi!");
+              await fetchVehicles();
+            } else {
+              toast.error(
+                response.errors?.[0] ?? "Silme sırasında hata oluştu."
+              );
+            }
+            setSelectedForDelete(null);
+            setOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 }

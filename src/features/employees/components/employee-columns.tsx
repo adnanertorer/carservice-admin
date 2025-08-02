@@ -1,4 +1,3 @@
-import type { GenericService } from "@/core/services/GenericService";
 import type { ColumnDef } from "@tanstack/react-table";
 import { toast } from "react-toastify";
 import { IconRowRemove } from "@tabler/icons-react";
@@ -6,8 +5,8 @@ import type { EmployeeModel } from "../models/employee-model";
 import { EditEmployeeDrawer } from "./edit-employee-drawer";
 
 export const employeeColumns = (
-  service: GenericService<EmployeeModel>,
-  onEmployeeUpdated?: () => Promise<void>
+  onEmployeeUpdated?: () => Promise<void>,
+  onDeleteRequest?: (item: EmployeeModel) => void
 ): ColumnDef<EmployeeModel>[] => [
   {
     accessorKey: "name",
@@ -69,17 +68,7 @@ export const employeeColumns = (
             onEmployeeUpdated={onEmployeeUpdated} />
           <IconRowRemove
             className="cursor-pointer"
-            onClick={() => {
-              service
-                .remove(employee.id)
-                .then(() => {
-                  toast.success("Çalışan başarıyla silindi.");
-                  onEmployeeUpdated?.();
-                })
-                .catch(() => {
-                  toast.error("Çalışan silinirken bir hata oluştu.");
-                });
-            }}
+            onClick={() => onDeleteRequest?.(employee)}
           />
         </div>
       );

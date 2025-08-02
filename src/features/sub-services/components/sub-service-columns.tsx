@@ -1,13 +1,11 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { IconRowRemove } from "@tabler/icons-react";
-import { toast } from "react-toastify";
-import type { GenericService } from "@/core/services/GenericService";
 import type { SubServiceModel } from "../models/sub-service-model";
 import { EditSubServiceDrawer } from "./edit-subservice-drawer";
 
 export const SubServiceColumns = (
-  service: GenericService<SubServiceModel>,
-  onSubServiceUpdated?: () => Promise<void>
+  onSubServiceUpdated?: () => Promise<void>,
+  onDeleteRequest?: (item: SubServiceModel) => void
 ): ColumnDef<SubServiceModel>[] => [
   {
     accessorKey: "operation",
@@ -74,7 +72,6 @@ export const SubServiceColumns = (
     enableHiding: false,
     cell: ({ row }) => {
       const subService = row.original;
-      console.log("SubService:", subService);
       return (
         <div className="flex items-center gap-6">
           {subService.mainService?.mainServiceStatus === 0 && (
@@ -84,23 +81,7 @@ export const SubServiceColumns = (
             onSubServiceUpdated={onSubServiceUpdated}
           ></EditSubServiceDrawer>
           <IconRowRemove
-            onClick={async () => {
-              if (!subService.id) {
-                toast.error("Geçersiz kayıt: ID bulunamadı!");
-                return;
-              }
-              const response = await service.remove(subService.id);
-              if (response.succeeded) {
-                toast.success("Kayıt silindi!");
-                if (onSubServiceUpdated) {
-                  await onSubServiceUpdated();
-                }
-              } else {
-                toast.error(
-                  response.errors?.[0] || "Kayıt silinirken bir hata oluştu!"
-                );
-              }
-            }}
+            onClick={() => onDeleteRequest?.(subService)}
           ></IconRowRemove>
           </>)}<></>
         </div>
