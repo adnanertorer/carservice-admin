@@ -68,7 +68,12 @@ export const columns = (
               }
             }}
           ></IconCar>
-          <IconReportMoney></IconReportMoney>
+          <IconReportMoney
+          onClick={() => {
+              if (navigate) {
+                navigate(`/customer-transactions/${customer.id}`);
+              }
+            }}></IconReportMoney>
         </div>
       );
     },

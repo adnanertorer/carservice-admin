@@ -12,6 +12,7 @@ import { CustomerVehiclePage } from "./pages/customer-vehicles/customer-vehicle-
 import { MainServicePage } from "./pages/main-services/main-service-page";
 import { SubServicePage } from "./pages/sub-services/sub-service-page";
 import { AccountTransactionPage } from "./pages/account-transactions/account-transaction-page";
+import { CustomerDebtPage } from "./pages/customer-debts/customer-debt-page";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
             <Route path="/main-services" element={<MainServicePage />} />
             <Route path="/main-services/:id/sub-services" element={<SubServicePage />} />
             <Route path="/account-transactions" element={<AccountTransactionPage />} />
+            <Route path="/customer-transactions/:id" element={<CustomerDebtPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

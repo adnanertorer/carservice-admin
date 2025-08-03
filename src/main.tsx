@@ -8,7 +8,7 @@ import { ThemeProvider } from "./components/theme-provider.tsx";
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
-  <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+  <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <App />

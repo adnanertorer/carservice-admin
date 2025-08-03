@@ -12,6 +12,7 @@ import {
 interface CreateDrawerProps<T> {
   endpoint: string;
   title: string;
+  triggerText?: string;
   onCreated?: () => Promise<void>;
   renderForm: (onSubmit: (model: T) => Promise<void>) => React.ReactNode;
 }
@@ -21,6 +22,7 @@ export const CreateDrawer = <T extends object>({
   title,
   onCreated,
   renderForm,
+  triggerText,
 }: CreateDrawerProps<T>) => {
   const service = new GenericService<T>(endpoint);
 
@@ -35,7 +37,7 @@ export const CreateDrawer = <T extends object>({
   return (
     <>
       <Sheet>
-        <SheetTrigger>Yeni Kayıt</SheetTrigger>
+        <SheetTrigger>{triggerText || "Yeni Kayıt"}</SheetTrigger>
         <SheetContent className="overflow-x-auto">
           <SheetHeader>
             <SheetTitle>{title}</SheetTitle>
