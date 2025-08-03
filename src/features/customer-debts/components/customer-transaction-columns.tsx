@@ -1,7 +1,7 @@
+import type { AccountTransactionModel } from "@/features/account-transactions/models/account-transaction-model";
 import type { ColumnDef } from "@tanstack/react-table";
-import type { AccountTransactionModel } from "../models/account-transaction-model";
 
-export const TransactionColumns = (
+export const CustomerTransactionColumns = (
 ): ColumnDef<AccountTransactionModel>[] => [
   {
     accessorKey: "ownerName",
@@ -36,7 +36,7 @@ export const TransactionColumns = (
             : status == 1
             ? "Tahsilat"
             : status == 2
-            ? "Gider"
+            ? "Expense"
             : status == 3
             ? "Düzeltme"
             : null}

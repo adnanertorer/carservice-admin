@@ -112,8 +112,6 @@ export function CreateSubServiceForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = form.getValues();
-    console.log(formData);
     onSubmit(form.getValues() as SubServiceModel);
   };
 
