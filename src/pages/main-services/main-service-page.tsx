@@ -22,9 +22,20 @@ import { Pagination } from "@/components/pagination";
 import type { MainServiceModel } from "@/features/main-services/models/main-service-model";
 import { MainServiceColumns } from "@/features/main-services/components/main-service-columns";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ConfirmDialogShadCn } from "@/core/components/dialogs/alert-dialog";
 import { toast } from "react-toastify";
+import type {
+  MainResponse,
+  PaginatedResponse,
+} from "@/core/api/responses/PaginatedResponse";
+import { usePagination } from "@/hooks/use-pagination";
+import {
+  DEFAULT_PAGE_SIZE,
+  DEFAULT_PAGE_SIZE_OPTIONS,
+} from "@/core/consts/consts";
+import api from "@/core/api/axios";
+import { GenericPagination } from "@/components/generic-pagination";
 
 export function MainServicePage() {
   const navigate = useNavigate();
@@ -35,6 +46,12 @@ export function MainServicePage() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+
+  //pagination islemleri
+  const [paginationData, setPaginationData] =
+    useState<PaginatedResponse<MainServiceModel> | null>(null);
+  const { currentPage, pageSize, handlePageChange, handlePageSizeChange } =
+    usePagination(DEFAULT_PAGE_SIZE);
 
   //main service verileri
   const [mainservices, setMainServices] = useState<MainServiceModel[]>(data);
@@ -59,28 +76,52 @@ export function MainServicePage() {
     setOpen(false);
   };
 
+  const mainServiceByFilter = useCallback(
+    async (
+      pageNumber: number,
+      pageSize: number,
+      searchText: string,
+      isAll: boolean
+    ) => {
+      const params = new URLSearchParams();
+
+      params.append("pageSize", pageSize.toString());
+      params.append("pageIndex", pageNumber.toString());
+      params.append("IsAllItems", isAll.toString());
+      params.append("search", searchText);
+
+      const response = await api.get<MainResponse<MainServiceModel>>(
+        `/mainservice/list?${params.toString()}`
+      );
+      if (response.data.succeeded && response.data.data?.items) {
+        setMainServices(response.data.data?.items);
+        setPaginationData(response.data.data);
+      }
+    },
+    []
+  );
+
   const fetchMainServices = React.useCallback(async () => {
-    const res = await mainService.getByFilter(
-      undefined,
-      undefined,
-      0,
-      50,
-      "",
-      false
-    );
-    if (res.succeeded && res.data?.items) {
-      setMainServices(res.data?.items);
-    }
-  }, [mainService]);
+    mainServiceByFilter(currentPage, pageSize, "", false);
+  }, [mainServiceByFilter, currentPage, pageSize]);
+
+  const onPageChange = (page: number) => {
+    handlePageChange(page);
+    mainServiceByFilter(page, pageSize, "", false);
+  };
+
+  const onPageSizeChange = (newPageSize: number) => {
+    handlePageSizeChange(newPageSize);
+    mainServiceByFilter(currentPage, newPageSize, "", false);
+  };
 
   const mainServiceColumns = React.useMemo(
     () =>
-      MainServiceColumns( navigate, (item) => {
+      MainServiceColumns(navigate, (item) => {
         setSelectedForDelete(item);
       }),
     [navigate]
   );
-  
 
   useEffect(() => {
     fetchMainServices();
@@ -141,7 +182,24 @@ export function MainServicePage() {
           </TableBody>
         </Table>
       </div>
-      <Pagination table={table} />
+      <>
+        <div className="order-1 lg:order-2 w-full lg:w-auto float-right">
+          {paginationData ? (
+            <GenericPagination
+              data={paginationData}
+              onPageChange={onPageChange}
+              onPageSizeChange={onPageSizeChange}
+              pageSizeOptions={DEFAULT_PAGE_SIZE_OPTIONS}
+              showPageSizeSelector={true}
+              showInfo={true}
+            />
+          ) : (
+            <div className="text-sm text-gray-500">
+              Sayfalama verisi yükleniyor...
+            </div>
+          )}
+        </div>
+      </>
       {selectedForDelete && (
         <ConfirmDialogShadCn
           open={open}
