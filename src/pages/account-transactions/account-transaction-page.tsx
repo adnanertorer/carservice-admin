@@ -27,6 +27,7 @@ import type { ISingleResponse } from "@/core/api/responses/ISingleResponse";
 import type { MainResponse, PaginatedResponse } from "@/core/api/responses/PaginatedResponse";
 import { GenericPagination } from "@/components/generic-pagination";
 import { usePagination } from "@/hooks/use-pagination";
+import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_SIZE_OPTIONS } from "@/core/consts/consts";
 
 export function AccountTransactionPage() {
   const data: AccountTransactionModel[] = [];
@@ -44,7 +45,7 @@ export function AccountTransactionPage() {
 
   //pagination islemleri
   const [paginationData, setPaginationData] = React.useState<PaginatedResponse<AccountTransactionModel> | null>(null);
-  const { currentPage, pageSize, handlePageChange, handlePageSizeChange } = usePagination(5);
+  const { currentPage, pageSize, handlePageChange, handlePageSizeChange } = usePagination(DEFAULT_PAGE_SIZE);
 
   const getTotals = (
     customerId?: string,
@@ -227,7 +228,7 @@ export function AccountTransactionPage() {
               data={paginationData}
               onPageChange={onPageChange}
               onPageSizeChange={onPageSizeChange}
-              pageSizeOptions={[5, 10, 15, 20, 25, 30, 35, 40, 45, 50]}
+              pageSizeOptions={DEFAULT_PAGE_SIZE_OPTIONS}
               showPageSizeSelector={true}
               showInfo={true}
             />

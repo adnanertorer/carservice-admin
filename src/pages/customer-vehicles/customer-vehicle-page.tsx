@@ -14,13 +14,17 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ColumnFilterInput } from "@/components/table-filter";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TableHeaders } from "@/components/table-header";
-import { Pagination } from "@/components/pagination";
 import { useNavigate, useParams } from "react-router-dom";
 import type { CustomerVehicleModel } from "@/features/customer-vehicles/models/customer-vehicle-model";
 import { vehicleColumns } from "@/features/customer-vehicles/components/vehicle-columns";
 import { CreateVehicleDrawer } from "@/features/customer-vehicles/components/create-vehicle-drawer";
 import { ConfirmDialogShadCn } from "@/core/components/dialogs/alert-dialog";
 import { toast } from "react-toastify";
+import type { MainResponse, PaginatedResponse } from "@/core/api/responses/PaginatedResponse";
+import { usePagination } from "@/hooks/use-pagination";
+import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_SIZE_OPTIONS } from "@/core/consts/consts";
+import api from "@/core/api/axios";
+import { GenericPagination } from "@/components/generic-pagination";
 
 export function CustomerVehiclePage() {
   const navigate = useNavigate();
@@ -31,6 +35,12 @@ export function CustomerVehiclePage() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
   const { customerId } = useParams<{ customerId: string }>();
+
+  //pagination islemleri
+    const [paginationData, setPaginationData] =
+      useState<PaginatedResponse<CustomerVehicleModel> | null>(null);
+    const { currentPage, pageSize, handlePageChange, handlePageSizeChange } =
+      usePagination(DEFAULT_PAGE_SIZE);
 
   //satırlardan gelen secili kayitı silmek için
   const [selectedForDelete, setSelectedForDelete] =
@@ -52,23 +62,48 @@ export function CustomerVehiclePage() {
     []
   );
 
+  const vehiclesByFilter = useCallback(
+    async (
+      pageNumber: number,
+      pageSize: number,
+      searchText: string,
+      isAll: boolean
+    ) => {
+
+      const params = new URLSearchParams();
+
+    params.append("pageSize", pageSize.toString());
+    params.append("pageIndex", pageNumber.toString());
+    params.append("IsAllItems", isAll.toString());
+    params.append("search", searchText);
+    params.append("customerId", customerId ?? "");
+
+      const response = await api.get<MainResponse<CustomerVehicleModel>>(`/vehicle/list?${params.toString()}`);
+
+      if (
+        response.data.succeeded &&
+        response.data.data?.items
+      ) {
+        setVehicles(response.data.data?.items);
+        setPaginationData(response.data.data);
+      }
+    },
+    [customerId]
+  );
+
   const fetchVehicles = useCallback(async () => {
-    const response = await vehicleService.getByFilter(
-      customerId,
-      "customerId",
-      0,
-      50,
-      "",
-      false
-    );
-    if (
-      response.succeeded &&
-      response.data?.items &&
-      response.data?.items.length > 0
-    ) {
-      setVehicles(response.data?.items);
-    }
-  }, [customerId, vehicleService]);
+    vehiclesByFilter(currentPage, pageSize, "", false);
+  }, [currentPage, pageSize, vehiclesByFilter]);
+
+  const onPageChange = (page: number) => {
+    handlePageChange(page);
+     vehiclesByFilter(currentPage, pageSize, "", false);
+  };
+
+  const onPageSizeChange = (newPageSize: number) => {
+    handlePageSizeChange(newPageSize);
+     vehiclesByFilter(currentPage, pageSize, "", false);
+  };
 
   const columns = useMemo(
     () => vehicleColumns(fetchVehicles, navigate, (item) =>{
@@ -143,7 +178,22 @@ export function CustomerVehiclePage() {
           </TableBody>
         </Table>
       </div>
-      <Pagination table={table} />
+      <div className="order-1 lg:order-2 w-full lg:w-auto">
+        {paginationData ? (
+          <GenericPagination
+            data={paginationData}
+            onPageChange={onPageChange}
+            onPageSizeChange={onPageSizeChange}
+            pageSizeOptions={DEFAULT_PAGE_SIZE_OPTIONS}
+            showPageSizeSelector={true}
+            showInfo={true}
+          />
+        ) : (
+          <div className="text-sm text-gray-500">
+            Sayfalama verisi yükleniyor...
+          </div>
+        )}
+      </div>
       {selectedForDelete && (
         <ConfirmDialogShadCn
           open={open}
@@ -167,6 +217,7 @@ export function CustomerVehiclePage() {
           }}
         />
       )}
+      
     </div>
   );
 }

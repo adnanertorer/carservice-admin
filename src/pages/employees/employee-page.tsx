@@ -23,6 +23,7 @@ import type { MainResponse, PaginatedResponse } from "@/core/api/responses/Pagin
 import { usePagination } from "@/hooks/use-pagination";
 import { GenericPagination } from "@/components/generic-pagination";
 import api from "@/core/api/axios";
+import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_SIZE_OPTIONS } from "@/core/consts/consts";
 
 export function EmployeePage() {
   const data: EmployeeModel[] = [];
@@ -36,7 +37,7 @@ export function EmployeePage() {
   const [paginationData, setPaginationData] =
     useState<PaginatedResponse<EmployeeModel> | null>(null);
   const { currentPage, pageSize, handlePageChange, handlePageSizeChange } =
-    usePagination(5);
+    usePagination(DEFAULT_PAGE_SIZE);
 
   //satırlardan gelen secili kayitı silmek için
   const [selectedForDelete, setSelectedForDelete] =
@@ -211,7 +212,7 @@ export function EmployeePage() {
               data={paginationData}
               onPageChange={onPageChange}
               onPageSizeChange={onPageSizeChange}
-              pageSizeOptions={[5, 10, 15, 20, 25, 30, 35, 40, 45, 50]}
+              pageSizeOptions={DEFAULT_PAGE_SIZE_OPTIONS}
               showPageSizeSelector={true}
               showInfo={true}
             />
