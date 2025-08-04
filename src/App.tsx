@@ -13,6 +13,7 @@ import { MainServicePage } from "./pages/main-services/main-service-page";
 import { SubServicePage } from "./pages/sub-services/sub-service-page";
 import { AccountTransactionPage } from "./pages/account-transactions/account-transaction-page";
 import { CustomerDebtPage } from "./pages/customer-debts/customer-debt-page";
+import { CreateCompanyForm } from "./features/auth/company-register/forms/create-company-form";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/register-company" element={<CreateCompanyForm />} />
             <Route
               path="/"
               element={
