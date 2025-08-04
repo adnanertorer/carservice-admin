@@ -53,7 +53,6 @@ export function LoginForm({
 
     if (res?.data.succeeded) {
       const result = res?.data;
-      console.log(result);
       login(result.data.token, result.data.refreshToken);
       toast.success("Giriş başarılı!");
       navigate("/");
@@ -119,7 +118,7 @@ export function LoginForm({
             </div>
             <div className="mt-4 text-center text-sm">
               Hesabınız yok mu?{" "}
-              <a href="#" className="underline underline-offset-4">
+              <a onClick={() => navigate("/register-company")} className="underline underline-offset-4">
                 Hesap Oluştur
               </a>
             </div>

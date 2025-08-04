@@ -13,16 +13,14 @@ export const supplierSchema = z.object({
   email: z.string().email({
     message: "Geçerli bir e-posta adresi giriniz.",
   }).optional(),
-  phoneNumber: z.string().min(10, {
-    message: "Telefon numarası en az 10 karakter olmalıdır.",
-  }).max(20, {
-    message: "Telefon numarası en fazla 20 karakter olmalıdır.",
-  }),
+  phoneNumber:  z
+      .string()
+      .regex(/^\d{10,11}$/, "Telefon numarası geçersiz (10-11 haneli olmalı)"),
   address: z.string().min(10, {
     message: "Adres alanı en az 10 karakter olmalıdır.",
   }),
-  cityId: z.number(),
-  districtId: z.number(),
+  cityId: z.number().int().positive("Geçerli bir şehir ID'si giriniz"),
+  districtId: z.number().int().positive("Geçerli bir ilçe ID'si giriniz"),
   taxOffice: z.string().optional(),
   taxNumber: z.string().optional(),
 });

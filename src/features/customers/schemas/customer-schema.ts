@@ -8,22 +8,15 @@ export const customerFormSchema = z.object({
   surname: z.string().min(2, {
     message: "Soyisim alanı en az 2 karakter olmalı",
   }),
-  email: z.string().min(5, {
-    message: "Lütfen geçerli bir email yazınız",
-  }),
+  email: z.string().email("Geçerli bir e-posta adresi giriniz"),
   phone: z
-    .string()
-    .min(10, {
-      message: "En az 10 karakterden oluşur",
-    })
-    .max(16, {
-      message: "En fazla 16 karakterden oluşur",
-    }),
+      .string()
+      .regex(/^\d{10,11}$/, "Telefon numarası geçersiz (10-11 haneli olmalı)"),
   address: z.string().min(10, {
     message: "En az 10 karakterden oluşmalı",
   }),
-  cityId: z.number(),
-  districtId: z.number(),
+  cityId: z.number().int().positive("Geçerli bir şehir ID'si giriniz"),
+  districtId: z.number().int().positive("Geçerli bir ilçe ID'si giriniz"),
   taxOffice: z.string().optional(),
   taxNumber: z.string().optional(),
   isActive: z.boolean(),

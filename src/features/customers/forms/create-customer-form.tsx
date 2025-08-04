@@ -159,7 +159,7 @@ export function CreateCustomerForm({
                   defaultValue={field.value !== undefined ? String(field.value) : undefined}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Bir il seçiniz" />
                     </SelectTrigger>
                   </FormControl>
@@ -188,7 +188,7 @@ export function CreateCustomerForm({
                   defaultValue={field.value !== undefined ? String(field.value) : undefined}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Bir ilçe seçiniz" />
                     </SelectTrigger>
                   </FormControl>
@@ -245,7 +245,7 @@ export function CreateCustomerForm({
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit">Kaydet</Button>
         </form>
       </Form>
     </div>
