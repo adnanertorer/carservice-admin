@@ -72,20 +72,7 @@ export function CreateClaimForm({
       </h4>
       <Form {...form}>
         <form className="space-y-8" onSubmit={handleSubmit}>
-          <FormField
-            control={form.control}
-            name="claim"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Alacak Miktarı</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
+           <FormField
             control={form.control}
             name="transactionDate"
             render={({ field }) => (
@@ -97,7 +84,7 @@ export function CreateClaimForm({
                       <Button
                         variant="outline"
                         id="date-picker"
-                        className="w-60 justify-between font-normal"
+                        className="w-60 justify-between font-normal w-full"
                       >
                         {field.value
                           ? new Date(field.value).toLocaleDateString('tr-TR') + 
@@ -190,6 +177,20 @@ export function CreateClaimForm({
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="claim"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Alacak Miktarı</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+         
            <FormField
             control={form.control}
             name="description"

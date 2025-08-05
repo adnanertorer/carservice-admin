@@ -40,7 +40,7 @@ export const CreateServiceDrawer = <T extends object>({
         <SheetContent className="overflow-x-auto">
           <SheetHeader>
             <SheetTitle>{title}</SheetTitle>
-            <SheetDescription>{renderForm(handleCreate)}</SheetDescription>
+            <SheetDescription className="overflow-y-auto">{renderForm(handleCreate)}</SheetDescription>
           </SheetHeader>
         </SheetContent>
       </Sheet>

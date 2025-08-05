@@ -75,24 +75,11 @@ export function CreateMainServiceForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <h2 className="text-2xl font-bold">
+      <h4 className="font-bold">
         {vehicle?.brand} {vehicle?.model} {vehicle?.plate} Servis Oluştur
-      </h2>
+      </h4>
       <Form {...form}>
-        <form className="space-y-8" onSubmit={handleSubmit}>
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>İşlem Kartı Açıklaması</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <form className="space-y-8 text-sm" onSubmit={handleSubmit}>
           <FormField
             control={form.control}
             name="serviceDate"
@@ -105,7 +92,7 @@ export function CreateMainServiceForm({
                       <Button
                         variant="outline"
                         id="date-picker"
-                        className="w-60 justify-between font-normal"
+                        className="w-60 justify-between font-normal w-full"
                       >
                         {field.value
                           ? new Date(field.value).toLocaleDateString('tr-TR') + 
@@ -119,7 +106,7 @@ export function CreateMainServiceForm({
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent
-                      className="w-auto overflow-hidden p-0"
+                      className="w-auto overflow-y-auto p-0"
                       align="start"
                     >
                       <div className="p-3">
@@ -198,6 +185,20 @@ export function CreateMainServiceForm({
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>İşlem Kartı Açıklaması</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
           <Button type="submit">Kaydet</Button>
         </form>
       </Form>
