@@ -14,6 +14,7 @@ import { SubServicePage } from "./pages/sub-services/sub-service-page";
 import { AccountTransactionPage } from "./pages/account-transactions/account-transaction-page";
 import { CustomerDebtPage } from "./pages/customer-debts/customer-debt-page";
 import { CreateCompanyForm } from "./features/auth/company-register/forms/create-company-form";
+import { BookingPage } from "./pages/bookings/booking-page";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
             <Route path="/main-services/:id/sub-services" element={<SubServicePage />} />
             <Route path="/account-transactions" element={<AccountTransactionPage />} />
             <Route path="/customer-transactions/:id" element={<CustomerDebtPage />} />
+            <Route path="/bookings" element={<BookingPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

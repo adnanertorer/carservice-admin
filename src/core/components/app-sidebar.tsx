@@ -52,9 +52,9 @@ const data = {
       icon: IconDashboard,
     },
     {
-      title: "Araçlar",
-      url: "#",
-      icon: IconCar,
+      title: "Randevu İstekleri",
+      url: "/bookings",
+      icon: IconFriends,
     },
     {
       title: "Servisler",

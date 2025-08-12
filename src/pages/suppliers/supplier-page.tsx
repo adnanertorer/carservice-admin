@@ -104,6 +104,7 @@ export function SupplierPage() {
 
   return (
     <div className="w-full">
+      <h3 style={{ padding: "10px" }}>Tedarikçiler</h3>
       <ColumnFilterInput
         table={table}
         columnKey="email"

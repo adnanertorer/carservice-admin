@@ -148,7 +148,6 @@ export function AccountTransactionPage() {
     <div className="w-full">
       <FilterForm
         onFilter={(values) => {
-          // Filtre değiştiğinde ilk sayfaya dön
           handlePageChange(0);
           getTotals(
             values.customerId ?? undefined,
@@ -160,6 +159,7 @@ export function AccountTransactionPage() {
       
       {/* Desktop Tablo Görünümü */}
       <div className="hidden md:block rounded-md border mt-4">
+        <h3 style={{ padding: "10px" }}>Cari Hareketler</h3>
         <div className="p-2"></div>
         <Table>
           <TableHeaders table={table} />
@@ -196,6 +196,7 @@ export function AccountTransactionPage() {
 
       {/* Mobil Card Görünümü */}
       <div className="md:hidden mt-4">
+        <h3 style={{ padding: "10px" }}>Cari Hareketler</h3>
         {transactions.length > 0 ? (
           <div className="space-y-3">
             {transactions.map((transaction) => (

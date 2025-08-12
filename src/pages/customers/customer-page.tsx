@@ -145,6 +145,7 @@ export function CustomerPage() {
 
   return (
     <div className="w-full">
+      <h3 style={{ padding: "10px" }}>Müşteriler</h3>
       <ColumnFilterInput
         table={table}
         columnKey="email"
