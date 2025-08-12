@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  carservice-admin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: carservice-admin
+    ports:
+      - "8081:80" 
+    restart: unless-stopped

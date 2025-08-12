@@ -87,7 +87,8 @@ export const UseGenericQueryGrid = <T extends { id: string | undefined }, P>({
     queryKey: ["parent", selectedParentId],
     queryFn: async (): Promise<P | null> => {
       if (!parentService || !selectedParentId) return null;
-      return await parentService.getById(selectedParentId);
+      const response = await parentService.getById(selectedParentId);
+      return response.data ?? null;
     },
     enabled: !!selectedParentId && !!parentService,
     staleTime: 1000 * 60,

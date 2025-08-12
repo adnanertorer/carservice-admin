@@ -1,6 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { IconRowRemove } from "@tabler/icons-react";
-import { toast } from "react-toastify";
 import { sortableHeader } from "@/components/sortable-header";
 import type { SupplierModel } from "../models/supplier-model";
 import { EditSupplierDrawer } from "./edit-drawer";

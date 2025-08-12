@@ -5,7 +5,7 @@ import { clearToken, getAccessToken, getRefreshToken, setToken } from "../auth/T
 //const { apiUrl } = getApiConfig();
 
 const api = axios.create({
-    baseURL: "http://93.177.103.153:7290/api", 
+    baseURL: "https://api.fixybear.com/api", 
 });
 
 let isRefreshing = false;

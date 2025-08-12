@@ -52,3 +52,5 @@ export function ThemeProvider({
   )
 }
 
+
+export { ThemeProviderContext }

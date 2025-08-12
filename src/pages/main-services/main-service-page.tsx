@@ -18,7 +18,6 @@ import type {
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { GenericService } from "@/core/services/GenericService";
 import { TableHeaders } from "@/components/table-header";
-import { Pagination } from "@/components/pagination";
 import type { MainServiceModel } from "@/features/main-services/models/main-service-model";
 import { MainServiceColumns } from "@/features/main-services/components/main-service-columns";
 import { useNavigate } from "react-router-dom";
