@@ -138,6 +138,7 @@ export function EmployeePage() {
 
   return (
     <div className="w-full">
+      <h3 style={{ padding: "10px" }}>Personeller</h3>
       <ColumnFilterInput
         table={table}
         columnKey="name"

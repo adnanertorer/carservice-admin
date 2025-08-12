@@ -148,6 +148,7 @@ export function MainServicePage() {
 
   return (
     <div className="w-full">
+      <h3 style={{ padding: "10px" }}>Servisler</h3>
       <div className="rounded-md border">
         <div className="p-2"></div>
         <Table>
