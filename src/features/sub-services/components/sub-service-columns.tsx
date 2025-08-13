@@ -58,6 +58,11 @@ export const SubServiceColumns = (
     cell: ({ row }) => row.getValue("materialBrand"),
   },
   {
+    accessorKey: "materialCost",
+    header: "Malzeme Maliyeti",
+    cell: ({ row }) => row.getValue("materialCost"),
+  },
+  {
     accessorKey: "discount",
     header: "İndirim",
     cell: ({ row }) => row.getValue("discount"),
