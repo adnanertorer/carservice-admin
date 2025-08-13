@@ -61,6 +61,7 @@ export function CreateSubServiceForm({
       materialBrand: "",
       operation: "",
       supplierId: undefined,
+      materialCost: 0, 
     },
   });
 
@@ -324,6 +325,19 @@ export function CreateSubServiceForm({
                 <FormLabel>Kullanılan Malzeme Markası</FormLabel>
                 <FormControl>
                   <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="materialCost"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Kullanılan Malzeme Maliyeti</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
