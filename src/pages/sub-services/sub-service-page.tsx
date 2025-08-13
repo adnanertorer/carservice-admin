@@ -257,6 +257,9 @@ export function SubServicePage() {
           </div>
           <div className="p-4 border-b ml-4 mr-4" style={{ float: "right" }}>
             <p style={{ fontSize: "small" }}>
+              Toplam Malzeme Maliyeti: {subTotal?.totalMaterialCost}
+            </p>
+            <p style={{ fontSize: "small" }}>
               Toplam İndirim: {subTotal?.totalDiscount}
             </p>
             <p style={{ fontSize: "small" }}>

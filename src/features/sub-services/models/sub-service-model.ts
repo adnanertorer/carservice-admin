@@ -13,6 +13,7 @@ export type SubServiceModel = {
     materialBrand?: string;
     supplierId?: string;
     discount?: number;
+    materialCost?: number;
     cost: number;
     employee?: EmployeeModel;
     supplier?: SupplierModel;
