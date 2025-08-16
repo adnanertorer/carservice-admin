@@ -28,7 +28,6 @@ import {
 } from "@/components/ui/sidebar"
 import { NavMain } from "./nav-main"
 import { NavSecondary } from "./nav-secondary"
-import { NavUser } from "./nav-user"
 import { ModeToggle } from "@/components/ModeToggle"
 
 const data = {
