@@ -15,6 +15,7 @@ import { AccountTransactionPage } from "./pages/account-transactions/account-tra
 import { CustomerDebtPage } from "./pages/customer-debts/customer-debt-page";
 import { CreateCompanyForm } from "./features/auth/company-register/forms/create-company-form";
 import { BookingPage } from "./pages/bookings/booking-page";
+import LogoutPage from "./pages/auth/logout/logout-page";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/logout" element={<LogoutPage />} />
             <Route path="/register-company" element={<CreateCompanyForm />} />
             <Route
               path="/"

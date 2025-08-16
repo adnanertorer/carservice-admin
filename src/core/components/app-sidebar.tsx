@@ -11,6 +11,7 @@ import {
   IconFileWord,
   IconFriends,
   IconHelp,
+  IconLogout2,
   IconMoneybagPlus,
   IconReport,
   IconSettings,
@@ -28,6 +29,7 @@ import {
 import { NavMain } from "./nav-main"
 import { NavSecondary } from "./nav-secondary"
 import { NavUser } from "./nav-user"
+import { ModeToggle } from "@/components/ModeToggle"
 
 const data = {
   user: {
@@ -122,6 +124,11 @@ const data = {
       icon: IconSettings,
     },
     {
+      title: "Çıkış",
+      url: "/logout",
+      icon: IconLogout2,
+    },
+    {
       title: "Yardım",
       url: "#",
       icon: IconHelp,
@@ -169,7 +176,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <ModeToggle />
       </SidebarFooter>
     </Sidebar>
   )

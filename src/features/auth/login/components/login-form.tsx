@@ -74,7 +74,7 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Car Service</CardTitle>
+          <CardTitle>FixyBear</CardTitle>
           <CardDescription>
             Giriş yapmak için kayıtlı e-posta adresinizi girin
           </CardDescription>
