@@ -2,11 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
 import api from "@/core/api/axios";
 import type { ISingleResponse } from "@/core/api/responses/ISingleResponse";
 import { useState } from "react";
