@@ -19,6 +19,7 @@ import LogoutPage from "./pages/auth/logout/logout-page";
 import RegisterWithOtp from "./pages/auth/register-with-otp/register-with-otp-page";
 import ResetPasswordRequestPage from "./pages/auth/reset-password-request/reset-password-request-page";
 import ResetPasswordPage from "./pages/auth/reset-password/reset-password-page";
+import { SettingsPage } from "./pages/settings/change-password-page";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
             <Route path="/account-transactions" element={<AccountTransactionPage />} />
             <Route path="/customer-transactions/:id" element={<CustomerDebtPage />} />
             <Route path="/bookings" element={<BookingPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

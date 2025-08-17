@@ -119,7 +119,7 @@ const data = {
   navSecondary: [
     {
       title: "Ayarlar",
-      url: "#",
+      url: "/settings",
       icon: IconSettings,
     },
     {
