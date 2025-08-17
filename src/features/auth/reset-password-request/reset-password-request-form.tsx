@@ -22,7 +22,7 @@ export function ResetPasswordRequestForm() {
           toast.success(
             "Şifre sıfırlama isteği başarıyla gönderildi. Lütfen e-posta kutunuzu kontrol edin."
           );
-          navigate("/login");
+          navigate("/reset-password");
         } else {
           toast.error(
             "Şifre sıfırlama isteği gönderilemedi. Lütfen tekrar deneyin."
