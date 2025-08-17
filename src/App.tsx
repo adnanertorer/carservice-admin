@@ -20,6 +20,7 @@ import RegisterWithOtp from "./pages/auth/register-with-otp/register-with-otp-pa
 import ResetPasswordRequestPage from "./pages/auth/reset-password-request/reset-password-request-page";
 import ResetPasswordPage from "./pages/auth/reset-password/reset-password-page";
 import { SettingsPage } from "./pages/settings/change-password-page";
+import { MainReportPage } from "./pages/main-reports/main-reports-page";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
                 </PrivateRoute>
               }
             >
+            <Route path="/main-reports" element={<MainReportPage />} />
             <Route path="/employees" element={<EmployeePage />} />
             <Route path="/customers" element={<CustomerPage />} />
             <Route path="/customers/:customerId/vehicles" element={<CustomerVehiclePage />} />

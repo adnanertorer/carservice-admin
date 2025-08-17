@@ -55,7 +55,7 @@ export function LoginForm({
       const result = res?.data;
       login(result.data.token, result.data.refreshToken);
       toast.success("Giriş başarılı!");
-      navigate("/");
+      navigate("/main-reports");
     } else {
       toast.error("Hatalı giriş denemesi");
     }
