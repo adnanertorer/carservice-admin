@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import api from "@/core/api/axios";
 import { useNavigate } from "react-router-dom";
 import { CreateCompanyUserSchema } from "../schemas/company-register-schema";
-import carRepairImage from "@/assets/fixybear.png";
+import carRepairImage from "@/assets/fixy.png";
 import type { CityModel } from "@/shared/models/city-model";
 import { useEffect, useState } from "react";
 import type { DistrictModel } from "@/features/customers/models/DistrictModel";
@@ -108,7 +108,7 @@ export function CreateCompanyForm({
             console.log(res.data.data);
             toast.success("Firma kaydı başarılı!");
             // navigate to success page or reset form
-           navigate("/");
+           navigate("/opt-approve");
         }
     });
   };

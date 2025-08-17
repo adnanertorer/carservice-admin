@@ -16,6 +16,7 @@ import { CustomerDebtPage } from "./pages/customer-debts/customer-debt-page";
 import { CreateCompanyForm } from "./features/auth/company-register/forms/create-company-form";
 import { BookingPage } from "./pages/bookings/booking-page";
 import LogoutPage from "./pages/auth/logout/logout-page";
+import RegisterWithOtp from "./pages/auth/register-with-otp/register-with-otp-page";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/logout" element={<LogoutPage />} />
             <Route path="/register-company" element={<CreateCompanyForm />} />
+            <Route path="/opt-approve" element={<RegisterWithOtp />} />
             <Route
               path="/"
               element={
