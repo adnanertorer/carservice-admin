@@ -124,7 +124,7 @@ export function LoginForm({
             </div>
             <div className="mt-4 text-center text-sm">
               <a
-                href="#"
+                onClick={() => navigate("/reset-password-request")}
                 className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
               >
                 Parolanızı mı unuttunuz?

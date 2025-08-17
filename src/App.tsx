@@ -17,6 +17,8 @@ import { CreateCompanyForm } from "./features/auth/company-register/forms/create
 import { BookingPage } from "./pages/bookings/booking-page";
 import LogoutPage from "./pages/auth/logout/logout-page";
 import RegisterWithOtp from "./pages/auth/register-with-otp/register-with-otp-page";
+import ResetPasswordRequestPage from "./pages/auth/reset-password-request/reset-password-request-page";
+import ResetPasswordPage from "./pages/auth/reset-password/reset-password-page";
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
             <Route path="/logout" element={<LogoutPage />} />
             <Route path="/register-company" element={<CreateCompanyForm />} />
             <Route path="/opt-approve" element={<RegisterWithOtp />} />
+            <Route path="/reset-password-request" element={<ResetPasswordRequestPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route
               path="/"
               element={
