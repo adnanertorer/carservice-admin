@@ -22,10 +22,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import type { EmployeeServiceCountModel } from "../models/employee-service-count-model";
 import { useEffect, useState } from "react";
 import type { ISingleResponse } from "@/core/api/responses/ISingleResponse";
 import api from "@/core/api/axios";
+import type { VehicleServiceCountModel } from "../models/vehicle-service-count-model";
 
 const chartConfig = {
   serviceCount: {
@@ -37,15 +37,15 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function EmployeeServiceCountChart() {
-  const [serviceCount, setServiceCount] = useState<EmployeeServiceCountModel[]>(
+export function VehicleServiceCountChart() {
+  const [serviceCount, setServiceCount] = useState<VehicleServiceCountModel[]>(
     []
   );
 
-  const getEmployeeServiceCount = () => {
+  const getVehicleServiceCount = () => {
     api
-      .get<ISingleResponse<EmployeeServiceCountModel[]>>(
-        `/reports/employee-service-count`
+      .get<ISingleResponse<VehicleServiceCountModel[]>>(
+        `/reports/vehicle-service-count`
       )
       .then((res) => {
         return setServiceCount(res.data.data ?? []);
@@ -56,7 +56,7 @@ export function EmployeeServiceCountChart() {
   };
 
   useEffect(() => {
-    getEmployeeServiceCount();
+    getVehicleServiceCount();
   }, []);
 
   return (
@@ -76,7 +76,7 @@ export function EmployeeServiceCountChart() {
           >
             <CartesianGrid horizontal={false} />
             <YAxis
-              dataKey="employeeName"
+              dataKey="title"
               type="category"
               tickLine={false}
               tickMargin={10}
@@ -96,7 +96,7 @@ export function EmployeeServiceCountChart() {
               radius={4}
             >
               <LabelList
-                dataKey="employeeName"
+                dataKey="title"
                 position="insideLeft"
                 offset={8}
                 className="fill-(--color-label)"
@@ -116,8 +116,8 @@ export function EmployeeServiceCountChart() {
       <CardFooter className="flex-col items-center gap-2 text-sm">
         <div className="flex-col items-center gap-2 leading-none font-medium">
           {serviceCount.map((item) => (
-            <div key={item.employeeId} className="text-center p-1">
-              <p className="text-muted-foreground">{item.employeeName}</p>
+            <div key={item.vehicleId} className="text-center p-1">
+              <p className="text-muted-foreground">{item.title}</p>
               <p className="font-medium text-green-600 p-1">
                 Toplam Servis İşlemi : {item.serviceCount}
               </p>

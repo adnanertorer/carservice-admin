@@ -55,7 +55,7 @@ export function HighestEarningChart() {
   }, []);
 
   return (
-    <Card className="w-150">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>
           En Çok İşlem Yaptıran Müşterilerin Finansal Durum Raporu

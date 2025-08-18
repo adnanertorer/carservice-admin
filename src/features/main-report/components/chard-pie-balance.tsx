@@ -60,12 +60,11 @@ export function ChartPieBalance() {
   }, []);
 
   return (
-    <div className="flex items-center p-2">
-      <Card className="flex flex-col">
-        <CardHeader className="items-center pb-0">
+      <Card className="w-full">
+        <CardHeader>
           <CardTitle>Genel Finansal Durum</CardTitle>
         </CardHeader>
-        <CardContent className="flex-2 pb-0">
+        <CardContent>
           <ChartContainer
             config={chartConfig}
             className="[&_.recharts-pie-label-text]:fill-foreground mx-auto aspect-square max-h-[250px] w-[250px]"
@@ -97,6 +96,5 @@ export function ChartPieBalance() {
           </div>
         </CardFooter>
       </Card>
-    </div>
   );
 }
