@@ -20,7 +20,6 @@ import api from "@/core/api/axios";
 import type { ISingleResponse } from "@/core/api/responses/ISingleResponse";
 import { useEffect, useState } from "react";
 import type { TransactionReportModel } from "../models/tansaction-report-model";
-import type { HighestEarningModel } from "../models/highest-earning-model";
 
 const chartConfig = {
   amount: {
@@ -42,9 +41,6 @@ const chartConfig = {
 
 export function ChartPieBalance() {
   const [totals, setTotals] = useState<TransactionReportModel[]>([]);
-  const [highestEarning, setHighestEarning] = useState<HighestEarningModel[]>([]);
-
-  console.log(totals);
 
   const getTotalTransaction = () => {
     api
@@ -57,20 +53,10 @@ export function ChartPieBalance() {
       });
   };
 
-  const getHighestEarningCustomers = () => {
-    api
-      .get<ISingleResponse<HighestEarningModel[]>>(`/reports/highest-earning`)
-      .then((res) => {
-        return setHighestEarning(res.data.data ?? []);
-      })
-      .catch((error) => {
-        console.error("Error fetching totals:", error);
-      });
-  };
+  
 
   useEffect(() => {
     getTotalTransaction();
-    getHighestEarningCustomers();
   }, []);
 
   return (
