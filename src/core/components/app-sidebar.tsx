@@ -38,6 +38,11 @@ const data = {
   },
   navMain: [
     {
+      title: "Genel Durum Raporu",
+      url: "/main-reports",
+      icon: IconReport,
+    },
+    {
       title: "Personeller",
       url: "/employees",
       icon: IconFriends,

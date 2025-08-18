@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import api from "@/core/api/axios";
 import { useNavigate } from "react-router-dom";
 import { CreateCompanyUserSchema } from "../schemas/company-register-schema";
-import carRepairImage from "@/assets/fixy.png";
 import type { CityModel } from "@/shared/models/city-model";
 import { useEffect, useState } from "react";
 import type { DistrictModel } from "@/features/customers/models/DistrictModel";
@@ -32,6 +31,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { ISingleResponse } from "@/core/api/responses/ISingleResponse";
 import { toast } from "react-toastify";
+import { ModeToggle } from "@/components/ModeToggle";
 
 type CreateCompanyUserDto = z.infer<typeof CreateCompanyUserSchema>;
 
@@ -115,18 +115,13 @@ export function CreateCompanyForm({
 
   return (
     <div className={cn("space-y-8", className)} {...props}>
-        <h3 className="flex flex-col items-center justify-center rounded-lg">Car Service Firma Kayıt Formu</h3>
+      <div className="p-2 float-right">
+              <ModeToggle />
+            </div>
+        <h3 className="flex flex-col font-bold items-center justify-center rounded-lg mt-2">FixyBear Firma Kayıt Formu</h3>
       <Form {...form}>
         <form onSubmit={handleSubmit} className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* 1. SÜTUN: GÖRSEL */}
-            <div className="flex flex-col items-center justify-center rounded-lg">
-              <img
-                src={carRepairImage}
-                alt="Car Service"
-                className="w-full max-w-sm rounded-md object-cover"
-              />
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-5">
             <div>
               <h3 className="font-semibold mb-4">
                 Kullanıcı Bilgileri
@@ -136,7 +131,7 @@ export function CreateCompanyForm({
                 name="user.email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>E-Posta</FormLabel>
+                    <FormLabel className="mt-2">E-Posta</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -149,7 +144,7 @@ export function CreateCompanyForm({
                 name="user.password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Şifre</FormLabel>
+                    <FormLabel className="mt-2">Şifre</FormLabel>
                     <FormControl>
                       <Input type="password" {...field} />
                     </FormControl>
@@ -162,7 +157,7 @@ export function CreateCompanyForm({
                 name="user.name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Ad</FormLabel>
+                    <FormLabel className="mt-2">Ad</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -175,7 +170,7 @@ export function CreateCompanyForm({
                 name="user.surname"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Soyad</FormLabel>
+                    <FormLabel className="mt-2">Soyad</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -188,7 +183,7 @@ export function CreateCompanyForm({
                 name="user.phoneNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Telefon</FormLabel>
+                    <FormLabel className="mt-2">Telefon</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -205,7 +200,7 @@ export function CreateCompanyForm({
                 name="company.companyName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Şirket Adı</FormLabel>
+                    <FormLabel className="mt-2">Şirket Adı</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -218,7 +213,7 @@ export function CreateCompanyForm({
                 name="company.authorizedName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Yetkili Adı</FormLabel>
+                    <FormLabel className="mt-2">Yetkili Adı</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -231,7 +226,7 @@ export function CreateCompanyForm({
                 name="company.authorizedSurname"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Yetkili Soyadı</FormLabel>
+                    <FormLabel className="mt-2">Yetkili Soyadı</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -244,7 +239,7 @@ export function CreateCompanyForm({
                 name="company.taxNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Vergi Numarası</FormLabel>
+                    <FormLabel className="mt-2">Vergi Numarası</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -257,7 +252,7 @@ export function CreateCompanyForm({
                 name="company.taxOffice"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Vergi Dairesi</FormLabel>
+                    <FormLabel className="mt-2">Vergi Dairesi</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -274,7 +269,7 @@ export function CreateCompanyForm({
                 name="company.cityId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>İl</FormLabel>
+                    <FormLabel className="mt-2">İl</FormLabel>
                     <Select
                       onValueChange={(val) => {
                         const cityId = parseInt(val);
@@ -307,7 +302,7 @@ export function CreateCompanyForm({
                 name="company.districtId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>İlçe</FormLabel>
+                    <FormLabel className="mt-2">İlçe</FormLabel>
                     <Select
                       onValueChange={(val) => field.onChange(parseInt(val))}
                       defaultValue={
@@ -336,7 +331,7 @@ export function CreateCompanyForm({
                 name="company.companyAddress"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Şirket Adresi</FormLabel>
+                    <FormLabel className="mt-2">Şirket Adresi</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -349,7 +344,7 @@ export function CreateCompanyForm({
                 name="company.companyPhone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Şirket Telefonu</FormLabel>
+                    <FormLabel className="mt-2">Şirket Telefonu</FormLabel>
                     <FormControl>
                       <Input type="tel" {...field} />
                     </FormControl>
@@ -362,7 +357,7 @@ export function CreateCompanyForm({
                 name="company.companyEmail"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Şirket E-Posta</FormLabel>
+                    <FormLabel className="mt-2">Şirket E-Posta</FormLabel>
                     <FormControl>
                       <Input type="email" {...field} />
                     </FormControl>
