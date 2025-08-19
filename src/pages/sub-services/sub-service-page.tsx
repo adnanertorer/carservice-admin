@@ -126,8 +126,6 @@ export function SubServicePage() {
     }
   }, [getTotals, id]);
 
-  console.log(mainService);
-
   const approveService = async () => {
     if (mainService) {
       const updatedMainService: MainServiceModel = {
@@ -317,7 +315,6 @@ export function SubServicePage() {
             const response = await subServiceApiService.remove(
               selectedForDelete.id!
             );
-            console.log("Kayıt silme yanıtı:", response);
             if (response.succeeded) {
               toast.success("Kayıt silindi!");
               fetchSubServices();

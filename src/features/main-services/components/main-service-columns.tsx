@@ -56,7 +56,6 @@ export const MainServiceColumns = (
     header: "Servis Durumu",
     cell: ({ row }) => {
       const status = row.original.mainServiceStatus;
-      console.log("Service Status:", status);
       return (
         <div className="capitalize">
           {status == 0

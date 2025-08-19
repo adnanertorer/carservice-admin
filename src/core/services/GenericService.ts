@@ -13,7 +13,6 @@ export class GenericService<TModel> implements IGenericService<TModel> {
 
   async getList(): Promise<MainResponse<TModel>> {
     const response = await api.get(this.basePath);
-    console.log(response.data);
     return response.data;
   }
 

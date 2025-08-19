@@ -245,7 +245,6 @@ export function CustomerPage() {
           onCancel={closeDialog}
           onConfirm={async () => {
             const response = await customerService.remove(selectedForDelete.id);
-            console.log("Kayıt silme yanıtı:", response);
             if (response.succeeded) {
               toast.success("Kayıt silindi!");
               fetchCustomers();
