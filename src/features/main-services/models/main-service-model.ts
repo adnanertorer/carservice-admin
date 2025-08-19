@@ -7,6 +7,7 @@ export type MainServiceModel = {
   vehicleId: string;
   serviceDate: Date;
   mainServiceStatus: number;
+  kilometer?: number;
 
   vehicle?: CustomerVehicleModel
 };

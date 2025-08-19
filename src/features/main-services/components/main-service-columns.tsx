@@ -6,9 +6,11 @@ import {
 } from "@tabler/icons-react";
 import type { MainServiceModel } from "../models/main-service-model";
 import type { NavigateFunction } from "react-router-dom";
+import { EditMainServiceDrawer } from "./edit-mainservice-drawer";
 
 export const MainServiceColumns = (
   navigate?: NavigateFunction,
+  onMainServiceUpdated?: () => Promise<void>,
   onDeleteRequest?: (item: MainServiceModel) => void
 ): ColumnDef<MainServiceModel>[] => [
   {
@@ -30,6 +32,13 @@ export const MainServiceColumns = (
     header: "Model",
     cell: ({ row }) => (
       <div className="capitalize">{row.original.vehicle?.model}</div>
+    ),
+  },
+  {
+    accessorKey: "kilometer",
+    header: "Kilometre",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("kilometer")}</div>
     ),
   },
   {
@@ -96,6 +105,10 @@ export const MainServiceColumns = (
               <IconRowRemove
                 onClick={() => onDeleteRequest?.(mainService)}
               ></IconRowRemove>
+              <EditMainServiceDrawer
+                mainService={mainService}
+                onMainServiceUpdated={onMainServiceUpdated}
+              ></EditMainServiceDrawer>
             </>
           )}
           {mainService.mainServiceStatus !== 0 && (
