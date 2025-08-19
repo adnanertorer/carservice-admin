@@ -16,6 +16,9 @@ export const mainServiceSchema = z.object({
   }),
   mainServiceStatus: z.number().int().min(0, {
     message: "Servis durumu 0 veya daha büyük bir tamsayı olmalıdır.",
-  })
+  }),
+  kilometer: z.number().min(0, {
+    message: "Kilometre 0 veya daha büyük bir sayı olmalıdır.",
+  }).optional()
 });
 

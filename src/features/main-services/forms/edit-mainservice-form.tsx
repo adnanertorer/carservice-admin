@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import type { ICreateMainServiceProps } from "../props/create-mainservice-props";
 import { mainServiceSchema } from "../schemas/main-service-schema";
 import type { MainServiceModel } from "../models/main-service-model";
 import { GenericService } from "@/core/services/GenericService";
@@ -29,26 +28,27 @@ import {
 import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import type { IEditMainServiceProps } from "../props/edit-main-service-props";
 
-export function CreateMainServiceForm({
+export function EditMainServiceForm({
   className,
   onSubmit,
-  vehicleId,
+  model,
   ...props
-}: ICreateMainServiceProps & Omit<React.ComponentProps<"div">, "onSubmit">) {
+}: IEditMainServiceProps & Omit<React.ComponentProps<"div">, "onSubmit">) {
   const [vehicle, setVehicle] = useState<CustomerVehicleModel | null>(null);
   const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof mainServiceSchema>>({
     resolver: zodResolver(mainServiceSchema),
     defaultValues: {
-      cost: 0,
-      description: "",
-      id: "",
-      serviceDate: new Date(),
-      mainServiceStatus: 0,
-      vehicleId: vehicleId || "",
-      kilometer: 0, // Default value for kilometer
+      cost: model.cost || 0,
+      description: model.description || "",
+      id: model.id || "",
+      serviceDate: model.serviceDate || new Date(),
+      mainServiceStatus: model.mainServiceStatus || 0,
+      vehicleId: model.vehicleId || "",
+      kilometer: model.kilometer || 0,
     },
   });
 
@@ -59,15 +59,15 @@ export function CreateMainServiceForm({
 
   useEffect(() => {
     async function fetchVehicle() {
-      if (vehicleId) {
-        const response = await vehicleService.getById(vehicleId);
+      if (model.vehicleId) {
+        const response = await vehicleService.getById(model.vehicleId);
         if (response.data) {
           setVehicle(response.data);
         }
       }
     }
     fetchVehicle();
-  }, [vehicleId, vehicleService]);
+  }, [model.vehicleId, vehicleService]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -213,7 +213,7 @@ export function CreateMainServiceForm({
             )}
           />
           
-          <Button type="submit">Kaydet</Button>
+          <Button type="submit">Güncelle</Button>
         </form>
       </Form>
     </div>

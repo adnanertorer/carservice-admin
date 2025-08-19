@@ -116,10 +116,10 @@ export function MainServicePage() {
 
   const mainServiceColumns = React.useMemo(
     () =>
-      MainServiceColumns(navigate, (item) => {
+      MainServiceColumns(navigate, fetchMainServices, (item) => {
         setSelectedForDelete(item);
       }),
-    [navigate]
+    [fetchMainServices, navigate]
   );
 
   useEffect(() => {
