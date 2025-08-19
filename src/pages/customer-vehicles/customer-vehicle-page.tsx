@@ -20,11 +20,18 @@ import { vehicleColumns } from "@/features/customer-vehicles/components/vehicle-
 import { CreateVehicleDrawer } from "@/features/customer-vehicles/components/create-vehicle-drawer";
 import { ConfirmDialogShadCn } from "@/core/components/dialogs/alert-dialog";
 import { toast } from "react-toastify";
-import type { MainResponse, PaginatedResponse } from "@/core/api/responses/PaginatedResponse";
+import type {
+  MainResponse,
+  PaginatedResponse,
+} from "@/core/api/responses/PaginatedResponse";
 import { usePagination } from "@/hooks/use-pagination";
-import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_SIZE_OPTIONS } from "@/core/consts/consts";
+import {
+  DEFAULT_PAGE_SIZE,
+  DEFAULT_PAGE_SIZE_OPTIONS,
+} from "@/core/consts/consts";
 import api from "@/core/api/axios";
 import { GenericPagination } from "@/components/generic-pagination";
+import { CustomerVehicleCard } from "@/features/customer-vehicles/components/vehicle-card";
 
 export function CustomerVehiclePage() {
   const navigate = useNavigate();
@@ -37,15 +44,15 @@ export function CustomerVehiclePage() {
   const { customerId } = useParams<{ customerId: string }>();
 
   //pagination islemleri
-    const [paginationData, setPaginationData] =
-      useState<PaginatedResponse<CustomerVehicleModel> | null>(null);
-    const { currentPage, pageSize, handlePageChange, handlePageSizeChange } =
-      usePagination(DEFAULT_PAGE_SIZE);
+  const [paginationData, setPaginationData] =
+    useState<PaginatedResponse<CustomerVehicleModel> | null>(null);
+  const { currentPage, pageSize, handlePageChange, handlePageSizeChange } =
+    usePagination(DEFAULT_PAGE_SIZE);
 
   //satırlardan gelen secili kayitı silmek için
   const [selectedForDelete, setSelectedForDelete] =
     useState<CustomerVehicleModel | null>(null);
-  
+
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -69,21 +76,19 @@ export function CustomerVehiclePage() {
       searchText: string,
       isAll: boolean
     ) => {
-
       const params = new URLSearchParams();
 
-    params.append("pageSize", pageSize.toString());
-    params.append("pageIndex", pageNumber.toString());
-    params.append("IsAllItems", isAll.toString());
-    params.append("search", searchText);
-    params.append("customerId", customerId ?? "");
+      params.append("pageSize", pageSize.toString());
+      params.append("pageIndex", pageNumber.toString());
+      params.append("IsAllItems", isAll.toString());
+      params.append("search", searchText);
+      params.append("customerId", customerId ?? "");
 
-      const response = await api.get<MainResponse<CustomerVehicleModel>>(`/vehicle/list?${params.toString()}`);
+      const response = await api.get<MainResponse<CustomerVehicleModel>>(
+        `/vehicle/list?${params.toString()}`
+      );
 
-      if (
-        response.data.succeeded &&
-        response.data.data?.items
-      ) {
+      if (response.data.succeeded && response.data.data?.items) {
         setVehicles(response.data.data?.items);
         setPaginationData(response.data.data);
       }
@@ -97,18 +102,19 @@ export function CustomerVehiclePage() {
 
   const onPageChange = (page: number) => {
     handlePageChange(page);
-     vehiclesByFilter(currentPage, pageSize, "", false);
+    vehiclesByFilter(currentPage, pageSize, "", false);
   };
 
   const onPageSizeChange = (newPageSize: number) => {
     handlePageSizeChange(newPageSize);
-     vehiclesByFilter(currentPage, pageSize, "", false);
+    vehiclesByFilter(currentPage, pageSize, "", false);
   };
 
   const columns = useMemo(
-    () => vehicleColumns(fetchVehicles, navigate, (item) =>{
-      setSelectedForDelete(item)
-    }),
+    () =>
+      vehicleColumns(fetchVehicles, navigate, (item) => {
+        setSelectedForDelete(item);
+      }),
     [fetchVehicles, navigate]
   );
 
@@ -136,16 +142,16 @@ export function CustomerVehiclePage() {
   });
 
   return (
-    <div className="w-full">
+    <div className="w-full rounded-md border">
       <ColumnFilterInput
         table={table}
         columnKey="brand"
         placeholder="Filter brands..."
       />
-      <div className="rounded-md border">
-        <div className="p-2">
-          <CreateVehicleDrawer onVehicleCreated={fetchVehicles} />
-        </div>
+      <div className="p-2">
+        <CreateVehicleDrawer onVehicleCreated={fetchVehicles} />
+      </div>
+      <div className="hidden md:block rounded-md border mt-4">
         <Table>
           <TableHeaders table={table} />
           <TableBody>
@@ -177,6 +183,28 @@ export function CustomerVehiclePage() {
             )}
           </TableBody>
         </Table>
+      </div>
+      {/* Mobil Card Görünümü */}
+      <div className="md:hidden mt-4">
+        {vehicles.length > 0 ? (
+          <div className="space-y-3">
+            {vehicles.map((vehicle) => (
+              <CustomerVehicleCard
+                onVehicleUpdated={fetchVehicles}
+                onDeleteRequest={(item) => {
+                  setSelectedForDelete(item);
+                  setOpen(true);
+                }}
+                key={vehicle.id}
+                vehicle={vehicle}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8 text-muted-foreground">
+            Kayıt bulunamadı.
+          </div>
+        )}
       </div>
       <div className="order-1 lg:order-2 w-full lg:w-auto">
         {paginationData ? (
@@ -217,7 +245,6 @@ export function CustomerVehiclePage() {
           }}
         />
       )}
-      
     </div>
   );
 }
