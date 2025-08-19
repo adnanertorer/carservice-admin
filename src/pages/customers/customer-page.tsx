@@ -33,7 +33,11 @@ import type {
 import { usePagination } from "@/hooks/use-pagination";
 import api from "@/core/api/axios";
 import { GenericPagination } from "@/components/generic-pagination";
-import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_SIZE_OPTIONS } from "@/core/consts/consts";
+import {
+  DEFAULT_PAGE_SIZE,
+  DEFAULT_PAGE_SIZE_OPTIONS,
+} from "@/core/consts/consts";
+import { CustomerCard } from "@/features/customers/components/customer-card";
 
 export function CustomerPage() {
   const navigate = useNavigate();
@@ -152,40 +156,66 @@ export function CustomerPage() {
         placeholder="Filter email..."
       />
       <div className="rounded-md border">
-        <div className="p-2">
-          <CreateCustomerDrawer onCustomerCreated={fetchCustomers} />
-        </div>
-        <Table>
-          <TableHeaders table={table} />
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+        <div className="hidden md:block rounded-md border mt-4">
+          <div className="p-2">
+            <CreateCustomerDrawer onCustomerCreated={fetchCustomers} />
+          </div>
+          <Table>
+            <TableHeaders table={table} />
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={customerColumns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={customerColumns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+
+        {/* Mobil Card Görünümü */}
+        <div className="md:hidden mt-4">
+          <h3 style={{ padding: "10px" }}>Müşteriler</h3>
+          {customers.length > 0 ? (
+            <div className="space-y-3">
+              {customers.map((customer) => (
+                <CustomerCard
+                  navigate={navigate}
+                  onCustomerUpdated={fetchCustomers}
+                  onDeleteRequest={(item) => {
+                    setSelectedForDelete(item);
+                  }}
+                  key={customer.id}
+                  customer={customer}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              Kayıt bulunamadı.
+            </div>
+          )}
+        </div>
       </div>
       <div className="mt-4 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div className="order-1 lg:order-2 w-full lg:w-auto float-right">
@@ -215,7 +245,6 @@ export function CustomerPage() {
           onCancel={closeDialog}
           onConfirm={async () => {
             const response = await customerService.remove(selectedForDelete.id);
-            console.log("Kayıt silme yanıtı:", response);
             if (response.succeeded) {
               toast.success("Kayıt silindi!");
               fetchCustomers();

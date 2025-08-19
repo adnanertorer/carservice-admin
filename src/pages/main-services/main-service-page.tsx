@@ -35,6 +35,7 @@ import {
 } from "@/core/consts/consts";
 import api from "@/core/api/axios";
 import { GenericPagination } from "@/components/generic-pagination";
+import { MainServiceCard } from "@/features/main-services/components/mainservice-card";
 
 export function MainServicePage() {
   const navigate = useNavigate();
@@ -146,10 +147,9 @@ export function MainServicePage() {
   });
 
   return (
-    <div className="w-full">
-      <h3 style={{ padding: "10px" }}>Servisler</h3>
-      <div className="rounded-md border">
-        <div className="p-2"></div>
+    <div className="w-full rounded-md border">
+      <div className="hidden md:block rounded-md border mt-4">
+        <h3 style={{ padding: "10px" }}>Servis Kartları</h3>
         <Table>
           <TableHeaders table={table} />
           <TableBody>
@@ -181,6 +181,30 @@ export function MainServicePage() {
             )}
           </TableBody>
         </Table>
+      </div>
+      {/* Mobil Card Görünümü */}
+      <div className="md:hidden mt-4">
+        <h3 style={{ padding: "10px" }}>Servis Kartları</h3>
+        {mainservices.length > 0 ? (
+          <div className="space-y-3">
+            {mainservices.map((mainservice) => (
+              <MainServiceCard
+                onMainServiceUpdated={fetchMainServices}
+                onDeleteRequest={(item) => {
+                  setSelectedForDelete(item);
+                  setOpen(true);
+                }}
+                key={mainservice.id}
+                mainService={mainservice}
+                navigate={navigate}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8 text-muted-foreground">
+            Kayıt bulunamadı.
+          </div>
+        )}
       </div>
       <>
         <div className="order-1 lg:order-2 w-full lg:w-auto float-right">

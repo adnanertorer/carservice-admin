@@ -63,7 +63,6 @@ export function AccountTransactionPage() {
         `/accounttransaction/get-totals?${params.toString()}`
       )
       .then((res) => {
-        console.log("Totals response:", res.data);
         setTotals(res.data.data);
         transactionsByFilter(customerId, startDate, endDate, currentPage, pageSize);
       })

@@ -97,7 +97,6 @@ export function CreateCompanyForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(form.getValues());
     onSubmit(form.getValues() as CreateCompanyUserDto);
   };
 
@@ -105,7 +104,6 @@ export function CreateCompanyForm({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     api.post<ISingleResponse<any>>("/user/create-company-user", data).then((res) => {
         if(res.data.succeeded){
-            console.log(res.data.data);
             toast.success("Firma kaydı başarılı!");
             // navigate to success page or reset form
            navigate("/opt-approve");

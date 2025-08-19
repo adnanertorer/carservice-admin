@@ -7,79 +7,84 @@ import { CreateMainServiceDrawer } from "@/features/main-services/components/cre
 import { getFuelType } from "@/core/enums/carServiceEnum";
 import type { NavigateFunction } from "react-router-dom";
 
-export const vehicleColumns = ( 
-    onVehicleUpdated?: () => Promise<void>, navigate?: NavigateFunction,
-onDeleteRequest?: (item: CustomerVehicleModel) => void) :
-ColumnDef<CustomerVehicleModel>[]  => [
-    {
-        accessorKey: 'brand',
-        header: 'Marka',
-        cell: ({ row }) => row.getValue('brand'),
+export const vehicleColumns = (
+  onVehicleUpdated?: () => Promise<void>,
+  navigate?: NavigateFunction,
+  onDeleteRequest?: (item: CustomerVehicleModel) => void
+): ColumnDef<CustomerVehicleModel>[] => [
+  {
+    accessorKey: "brand",
+    header: "Marka",
+    cell: ({ row }) => row.getValue("brand"),
+  },
+  {
+    accessorKey: "model",
+    header: "Model",
+    cell: ({ row }) => row.getValue("model"),
+  },
+  {
+    accessorKey: "year",
+    header: "Yıl",
+    cell: ({ row }) => row.getValue("year"),
+  },
+  {
+    accessorKey: "plate",
+    header: "Plaka",
+    cell: ({ row }) => row.getValue("plate"),
+  },
+  {
+    accessorKey: "year",
+    header: "Yıl",
+    cell: ({ row }) => row.getValue("year"),
+  },
+  {
+    accessorKey: "engine",
+    header: "Motor",
+    cell: ({ row }) => row.getValue("engine"),
+  },
+  {
+    accessorKey: "fuelType",
+    header: "Yakıt Tipi",
+    cell: ({ row }) => {
+      const fuelType = row.original.fuelTypeId;
+      if (fuelType) {
+        return getFuelType(fuelType);
+      } else {
+        return "";
+      }
     },
-    {
-        accessorKey: 'model',
-        header: 'Model',
-        cell: ({ row }) => row.getValue('model'),
+  },
+  {
+    accessorKey: "serialNumber",
+    header: "Şasi No",
+    cell: ({ row }) => row.getValue("serialNumber"),
+  },
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const vehicle = row.original;
+      return (
+        <div className="flex items-center gap-6">
+          <EditCustomerVehicleDrawer
+            vehicle={vehicle}
+            onVehicleUpdated={onVehicleUpdated}
+          />
+          <IconRowRemove
+            className="cursor-pointer"
+            onClick={() => onDeleteRequest?.(vehicle)}
+          />
+          <CreateMainServiceDrawer
+            vehicleId={vehicle.id}
+            onMainServiceCreated={async () => {
+              toast.success("Ana servis başarıyla oluşturuldu.");
+              if (navigate) {
+                navigate(`/main-services`);
+              }
+            }}
+          />
+        </div>
+      );
     },
-    {
-        accessorKey: 'year',
-        header: 'Yıl',
-        cell: ({ row }) => row.getValue('year'),
-    },
-    {
-        accessorKey: 'plate',
-        header: 'Plaka',
-        cell: ({ row }) => row.getValue('plate'),
-    },
-    {
-        accessorKey: 'year',
-        header: 'Yıl',
-        cell: ({ row }) => row.getValue('year'),
-    },
-    {
-        accessorKey: 'engine',
-        header: 'Motor',
-        cell: ({ row }) => row.getValue('engine'),
-    },
-    {
-        accessorKey: 'fuelType',
-        header: 'Yakıt Tipi',
-        cell: ({ row }) => {
-            const fuelType = row.original.fuelTypeId;
-            if(fuelType){
-                return getFuelType(fuelType);
-            }else{
-                return "";
-            }
-        },
-    },
-    {
-        accessorKey: 'serialNumber',
-        header: 'Şasi No',
-        cell: ({ row }) => row.getValue('serialNumber'),
-    },
-    {
-        id: 'actions',
-        enableHiding: false,
-        cell: ({ row }) => {
-            const vehicle = row.original;
-            return (
-                <div className="flex items-center gap-6">
-                    <EditCustomerVehicleDrawer
-                        vehicle={vehicle}
-                        onVehicleUpdated={onVehicleUpdated} />
-                    <IconRowRemove
-                        className="cursor-pointer"
-                        onClick={() => onDeleteRequest?.(vehicle)}
-                    />
-                    <CreateMainServiceDrawer vehicleId={vehicle.id} onMainServiceCreated={async () => {
-                        toast.success('Ana servis başarıyla oluşturuldu.');
-                        if (navigate) {
-                            navigate(`/main-services`);
-                        }
-                    }} />
-                </div>
-            );
-        }
-    }
+  },
 ];
