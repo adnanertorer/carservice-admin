@@ -19,11 +19,18 @@ import { employeeColumns } from "@/features/employees/components/employee-column
 import { CreateEmployeeDrawer } from "@/features/employees/components/create-employee-drawer";
 import { ConfirmDialogShadCn } from "@/core/components/dialogs/alert-dialog";
 import { toast } from "react-toastify";
-import type { MainResponse, PaginatedResponse } from "@/core/api/responses/PaginatedResponse";
+import type {
+  MainResponse,
+  PaginatedResponse,
+} from "@/core/api/responses/PaginatedResponse";
 import { usePagination } from "@/hooks/use-pagination";
 import { GenericPagination } from "@/components/generic-pagination";
 import api from "@/core/api/axios";
-import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_SIZE_OPTIONS } from "@/core/consts/consts";
+import {
+  DEFAULT_PAGE_SIZE,
+  DEFAULT_PAGE_SIZE_OPTIONS,
+} from "@/core/consts/consts";
+import { EmployeeCard } from "@/features/employees/components/employee-card";
 
 export function EmployeePage() {
   const data: EmployeeModel[] = [];
@@ -66,20 +73,18 @@ export function EmployeePage() {
       searchText: string,
       isAll: boolean
     ) => {
-
       const params = new URLSearchParams();
 
-    params.append("pageSize", pageSize.toString());
-    params.append("pageIndex", pageNumber.toString());
-    params.append("IsAllItems", isAll.toString());
-    params.append("search", searchText);
+      params.append("pageSize", pageSize.toString());
+      params.append("pageIndex", pageNumber.toString());
+      params.append("IsAllItems", isAll.toString());
+      params.append("search", searchText);
 
-      const response = await api.get<MainResponse<EmployeeModel>>(`/employee/list?${params.toString()}`);
+      const response = await api.get<MainResponse<EmployeeModel>>(
+        `/employee/list?${params.toString()}`
+      );
 
-      if (
-        response.data.succeeded &&
-        response.data.data?.items
-      ) {
+      if (response.data.succeeded && response.data.data?.items) {
         setEmployees(response.data.data?.items);
         setPaginationData(response.data.data);
       }
@@ -148,37 +153,61 @@ export function EmployeePage() {
         <div className="p-2">
           <CreateEmployeeDrawer onEmployeeCreated={fetchEmployees} />
         </div>
-        <Table>
-          <TableHeaders table={table} />
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+        <div className="hidden md:block rounded-md border mt-4">
+          <Table>
+            <TableHeaders table={table} />
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+        {/* Mobil Card Görünümü */}
+        <div className="md:hidden mt-4">
+          <h3 style={{ padding: "10px" }}>Müşteriler</h3>
+          {employees.length > 0 ? (
+            <div className="space-y-3">
+              {employees.map((employee) => (
+                <EmployeeCard
+                  onEmployeeUpdated={fetchEmployees}
+                  onDeleteRequest={(item) => {
+                    setSelectedForDelete(item);
+                  }}
+                  key={employee.id}
+                  employee={employee}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              Kayıt bulunamadı.
+            </div>
+          )}
+        </div>
         {selectedForDelete && (
           <ConfirmDialogShadCn
             open={open}
