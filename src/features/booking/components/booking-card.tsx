@@ -1,18 +1,17 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { IconRowRemove } from "@tabler/icons-react";
 import { Label } from "@/components/ui/label";
 import type { BookingModel } from "../models/booking-model";
+import { ApproveBookingDrawer } from "./approve-booking-drawer";
+import { BookingDetailDrawer } from "./booking-detail-drawer";
 
 interface BookingCardProps {
   booking: BookingModel;
-  onBookingUpdated?: () => Promise<void>;
-  onDeleteRequest?: (item: BookingModel) => void;
+  onApproveUpdate?: () => Promise<void>;
 }
 
 export function BookingCard({
   booking,
-  onBookingUpdated,
-  onDeleteRequest,
+  onApproveUpdate,
 }: BookingCardProps) {
   return (
     <Card className="w-full mb-3">
@@ -24,7 +23,9 @@ export function BookingCard({
                 {booking.mobileUser?.name} {booking.mobileUser?.surname}
               </h3>
               <Label>E-Posta</Label>
-              <p className="text-xs text-muted-foreground mb-2">{booking.mobileUser?.email}</p>
+              <p className="text-xs text-muted-foreground mb-2">
+                {booking.mobileUser?.email}
+              </p>
               <Label>Randevu Tarihi</Label>
               <p className="text-xs text-muted-foreground mb-2">
                 {booking.bookingDate}
@@ -33,18 +34,42 @@ export function BookingCard({
               <p className="text-xs text-muted-foreground mb-2">
                 {booking.vehicleBrand}
               </p>
+              <Label>Araç Modeli</Label>
+              <p className="text-xs text-muted-foreground mb-2">
+                {booking.vehicleModel}
+              </p>
+              <Label>Araç Yılı</Label>
+              <p className="text-xs text-muted-foreground mb-2">
+                {booking.vehicleYear}
+              </p>
+              <Label>Durum</Label>
+              <p className="text-xs text-muted-foreground mb-2">
+                {booking.status === 0
+                  ? "Beklemede"
+                  : booking.status === 1
+                  ? "Onaylandı"
+                  : booking.status === 2
+                  ? "Reddedildi"
+                  : booking.status === 3
+                  ? "İptal Edildi"
+                  : "Bilinmiyor"}
+              </p>
+              <Label>Mesaj</Label>
+              <p className="text-xs text-muted-foreground mb-2">
+                {booking.description}
+              </p>
             </div>
           </div>
 
           <div className="flex items-center gap-6 float-right">
-            <EditEmployeeDrawer
-              employee={employee}
-              onEmployeeUpdated={onEmployeeUpdated}
-            />
-            <IconRowRemove
-              className="cursor-pointer"
-              onClick={() => onDeleteRequest?.(employee)}
-            />
+            {booking.status == 0 && (
+              <ApproveBookingDrawer
+                bookingModel={booking}
+                key={booking.id}
+                onApproveBooking={onApproveUpdate}
+              />
+            )}
+            <BookingDetailDrawer bookingModel={booking} />
           </div>
         </div>
       </CardContent>
