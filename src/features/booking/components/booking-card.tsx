@@ -1,20 +1,19 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { IconRowRemove } from "@tabler/icons-react";
-import type { EmployeeModel } from "../models/employee-model";
-import { EditEmployeeDrawer } from "./edit-employee-drawer";
 import { Label } from "@/components/ui/label";
+import type { BookingModel } from "../models/booking-model";
 
-interface EmployeeCardProps {
-  employee: EmployeeModel;
-  onEmployeeUpdated?: () => Promise<void>;
-  onDeleteRequest?: (item: EmployeeModel) => void;
+interface BookingCardProps {
+  booking: BookingModel;
+  onBookingUpdated?: () => Promise<void>;
+  onDeleteRequest?: (item: BookingModel) => void;
 }
 
-export function EmployeeCard({
-  employee,
-  onEmployeeUpdated,
+export function BookingCard({
+  booking,
+  onBookingUpdated,
   onDeleteRequest,
-}: EmployeeCardProps) {
+}: BookingCardProps) {
   return (
     <Card className="w-full mb-3">
       <CardContent className="p-4">
@@ -22,17 +21,17 @@ export function EmployeeCard({
           <div className="flex justify-between items-start">
             <div>
               <h3 className="font-semibold text-sm mb-2">
-                {employee.name} {employee.surname}
+                {booking.mobileUser?.name} {booking.mobileUser?.surname}
               </h3>
               <Label>E-Posta</Label>
-              <p className="text-xs text-muted-foreground mb-2">{employee.email}</p>
-              <Label>Telefon</Label>
+              <p className="text-xs text-muted-foreground mb-2">{booking.mobileUser?.email}</p>
+              <Label>Randevu Tarihi</Label>
               <p className="text-xs text-muted-foreground mb-2">
-                {employee.phoneNumber}
+                {booking.bookingDate}
               </p>
-              <Label>Adres</Label>
+              <Label>Araç Markası</Label>
               <p className="text-xs text-muted-foreground mb-2">
-                {employee.address}
+                {booking.vehicleBrand}
               </p>
             </div>
           </div>

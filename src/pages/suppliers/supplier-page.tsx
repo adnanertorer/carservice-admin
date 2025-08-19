@@ -25,6 +25,7 @@ import { columns } from "@/features/suppliers/components/columns";
 import { CreateSupplierDrawer } from "@/features/suppliers/components/create-drawer";
 import { ConfirmDialogShadCn } from "@/core/components/dialogs/alert-dialog";
 import { toast } from "react-toastify";
+import { SupplierCard } from "@/features/suppliers/components/supplier-card";
 
 export function SupplierPage() {
   const data: SupplierModel[] = [];
@@ -114,37 +115,62 @@ export function SupplierPage() {
         <div className="p-2">
           <CreateSupplierDrawer onSupplierCreated={fetchSuppliers} />
         </div>
-        <Table>
-          <TableHeaders table={table} />
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+        <div className="hidden md:block rounded-md border mt-4">
+          <Table>
+            <TableHeaders table={table} />
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={supplierColumns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={supplierColumns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+        {/* Mobil Card Görünümü */}
+        <div className="md:hidden mt-4">
+          <h3 style={{ padding: "10px" }}>Tedarikçiler</h3>
+          {suppliers.length > 0 ? (
+            <div className="space-y-3">
+              {suppliers.map((supplier) => (
+                <SupplierCard
+                  onSupplierUpdated={fetchSuppliers}
+                  onDeleteRequest={(item) => {
+                    setSelectedForDelete(item);
+                    setOpen(true);
+                  }}
+                  key={supplier.id}
+                  supplier={supplier}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              Kayıt bulunamadı.
+            </div>
+          )}
+        </div>
       </div>
       <Pagination table={table} />
       {selectedForDelete && (
@@ -157,7 +183,6 @@ export function SupplierPage() {
           onCancel={closeDialog}
           onConfirm={async () => {
             const response = await supplierService.remove(selectedForDelete.id);
-            console.log("Kayıt silme yanıtı:", response);
             if (response.succeeded) {
               toast.success("Kayıt silindi!");
               fetchSuppliers();

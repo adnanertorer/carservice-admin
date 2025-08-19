@@ -60,14 +60,14 @@ export function ChartPieBalance() {
   }, []);
 
   return (
-      <Card className="w-full">
+      <Card className="w-full mb-20">
         <CardHeader>
           <CardTitle>Genel Finansal Durum</CardTitle>
         </CardHeader>
         <CardContent>
           <ChartContainer
             config={chartConfig}
-            className="[&_.recharts-pie-label-text]:fill-foreground mx-auto aspect-square max-h-[250px] w-[250px]"
+            className="[&_.recharts-pie-label-text]:fill-foreground mx-auto aspect-square max-h-[350px] w-[250px]"
           >
             <PieChart>
               <ChartTooltip

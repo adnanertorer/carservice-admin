@@ -60,12 +60,12 @@ export function VehicleServiceCountChart() {
   }, []);
 
   return (
-    <Card className="w-full">
+    <Card className="w-full mb-20">
       <CardHeader>
-        <CardTitle>Personele Göre Servis Hizmeti Sayısı</CardTitle>
+        <CardTitle>Araçlara Göre Servis Hizmeti Sayısı</CardTitle>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} className="[&_.recharts-pie-label-text]:fill-foreground mx-auto aspect-square max-h-[350px] w-[250px]">
           <BarChart
             accessibilityLayer
             data={serviceCount}

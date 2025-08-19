@@ -188,7 +188,7 @@ export function EmployeePage() {
         </div>
         {/* Mobil Card Görünümü */}
         <div className="md:hidden mt-4">
-          <h3 style={{ padding: "10px" }}>Müşteriler</h3>
+          <h3 style={{ padding: "10px" }}>Personeller</h3>
           {employees.length > 0 ? (
             <div className="space-y-3">
               {employees.map((employee) => (

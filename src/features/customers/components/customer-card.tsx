@@ -3,6 +3,7 @@ import type { CustomerModel } from "../models/CustomerModel";
 import type { NavigateFunction } from "react-router-dom";
 import { EditCustomerDrawer } from "./edit-drawer";
 import { IconCar, IconReportMoney, IconRowRemove } from "@tabler/icons-react";
+import { Label } from "@/components/ui/label";
 
 interface CustomerCardProps {
   customer: CustomerModel;
@@ -23,16 +24,24 @@ export function CustomerCard({
         <div className="space-y-3">
           <div className="flex justify-between items-start">
             <div>
-              <h3 className="font-semibold text-sm">
+              <h3 className="font-semibold text-sm mb-2">
                 {customer.name} {customer.surname}
               </h3>
-              <p className="text-xs text-muted-foreground">{customer.email}</p>
-              <p className="text-xs text-muted-foreground">{customer.phone}</p>
-              <p className="text-xs text-muted-foreground">
+              <Label>E-Posta</Label>
+              <p className="text-xs text-muted-foreground mb-2">{customer.email}</p>
+              <Label>Telefon</Label>
+              <p className="text-xs text-muted-foreground mb-2">{customer.phone}</p>
+              <Label>Şehir</Label>
+              <p className="text-xs text-muted-foreground mb-2">
                 {customer.city?.name}
               </p>
-              <p className="text-xs text-muted-foreground">
+              <Label>İlçe</Label>
+              <p className="text-xs text-muted-foreground mb-2">
                 {customer.district?.name}
+              </p>
+               <Label>Adres</Label>
+              <p className="text-xs text-muted-foreground mb-2">
+                {customer.address}
               </p>
             </div>
           </div>
