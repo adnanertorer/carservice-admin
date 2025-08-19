@@ -32,6 +32,7 @@ import type { ISingleResponse } from "@/core/api/responses/ISingleResponse";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
 import { ConfirmDialogShadCn } from "@/core/components/dialogs/alert-dialog";
+import { SubServiceCard } from "@/features/sub-services/components/sub-service-card";
 
 export function SubServicePage() {
   const data: SubServiceModel[] = [];
@@ -76,10 +77,6 @@ export function SubServicePage() {
     []
   );
 
-  useEffect(() => {
-    getTotals();
-  }, [id]);
-
   const getTotals = React.useCallback(async () => {
     if (!id) {
       console.error("Main service ID is not provided.");
@@ -95,6 +92,10 @@ export function SubServicePage() {
         }
       });
   }, [id]);
+
+  useEffect(() => {
+    getTotals();
+  }, [getTotals, id]);
 
   useEffect(() => {
     if (!id) {
@@ -123,7 +124,7 @@ export function SubServicePage() {
       setSubServices(res.data.data?.items);
       getTotals();
     }
-  }, [id]);
+  }, [getTotals, id]);
 
   console.log(mainService);
 
@@ -133,7 +134,7 @@ export function SubServicePage() {
         cost: subTotal?.totalCost ?? 0,
         description: mainService.description,
         id: mainService.id,
-        mainServiceStatus: 2, 
+        mainServiceStatus: 2,
         serviceDate: mainService.serviceDate,
         vehicleId: mainService.vehicleId,
       };
@@ -150,9 +151,10 @@ export function SubServicePage() {
   };
 
   const subServiceColumns = useMemo(
-    () => SubServiceColumns(fetchSubServices, (item) => {
-      setSelectedForDelete(item);
-    }),
+    () =>
+      SubServiceColumns(fetchSubServices, (item) => {
+        setSelectedForDelete(item);
+      }),
     [fetchSubServices]
   );
 
@@ -180,38 +182,38 @@ export function SubServicePage() {
   });
 
   return (
-    <div className="w-full">
-      <div className="rounded-md border">
-        {mainService && (
-          <div className="p-4 border-b">
-            <h4 className="text-lg font-semibold">
-              {mainService.vehicle?.plate} {mainService.vehicle?.brand}
-              {mainService.vehicle?.model} Servis Kartı Detayları
-            </h4>
-            <p style={{ fontSize: "small" }}>{mainService.description}</p>
-            <p style={{ fontSize: "small" }}>
-              Servis Durumu:{" "}
-              {mainService.mainServiceStatus == 0
-                ? "Açık"
-                : mainService.mainServiceStatus == 1
-                ? "Hazırlanıyor"
-                : mainService.mainServiceStatus == 2
-                ? "Tamamlandı"
-                : mainService.mainServiceStatus == 3
-                ? "İptal Edildi"
-                : null}
-            </p>
-          </div>
-        )}
-        <div className="p-2">
-          {mainService && mainService.mainServiceStatus === 0 && (
-            <CreateSubServiceDrawer
-              key={id}
-              onSubServiceCreated={fetchSubServices}
-              mainServiceId={id ?? ""}
-            />
-          )}
+    <div className="w-full rounded-md border">
+      {mainService && (
+        <div className="p-4 border-b">
+          <h4 className="text-lg font-semibold">
+            {mainService.vehicle?.plate} {mainService.vehicle?.brand}
+            {mainService.vehicle?.model} Servis Kartı Detayları
+          </h4>
+          <p style={{ fontSize: "small" }}>{mainService.description}</p>
+          <p style={{ fontSize: "small" }}>
+            Servis Durumu:{" "}
+            {mainService.mainServiceStatus == 0
+              ? "Açık"
+              : mainService.mainServiceStatus == 1
+              ? "Hazırlanıyor"
+              : mainService.mainServiceStatus == 2
+              ? "Tamamlandı"
+              : mainService.mainServiceStatus == 3
+              ? "İptal Edildi"
+              : null}
+          </p>
         </div>
+      )}
+      <div className="p-2">
+        {mainService && mainService.mainServiceStatus === 0 && (
+          <CreateSubServiceDrawer
+            key={id}
+            onSubServiceCreated={fetchSubServices}
+            mainServiceId={id ?? ""}
+          />
+        )}
+      </div>
+      <div className="hidden md:block rounded-md border mt-4">
         <Table>
           <TableHeaders table={table} />
           <TableBody>
@@ -243,6 +245,28 @@ export function SubServicePage() {
             )}
           </TableBody>
         </Table>
+      </div>
+      {/* Mobil Card Görünümü */}
+      <div className="md:hidden mt-4">
+        {subServices.length > 0 ? (
+          <div className="space-y-3">
+            {subServices.map((subService) => (
+              <SubServiceCard
+                onSubServiceUpdated={fetchSubServices}
+                onDeleteRequest={(item) => {
+                  setSelectedForDelete(item);
+                  setOpen(true);
+                }}
+                key={subService.id}
+                subService={subService}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8 text-muted-foreground">
+            Kayıt bulunamadı.
+          </div>
+        )}
       </div>
       <Pagination table={table} />
       {mainService && (
