@@ -37,7 +37,9 @@ export const CreateDrawer = <T extends object>({
   return (
     <>
       <Sheet>
-        <SheetTrigger>{triggerText || "Yeni Kayıt"}</SheetTrigger>
+        <SheetTrigger 
+        className=" border-2 dark:border dark:border-gray-500  hover:shadow-md rounded-md px-4 py-2 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-primary transition-colors duration-300 "
+        >{triggerText || "Yeni Kayıt"}</SheetTrigger>
         <SheetContent className="overflow-x-auto">
           <SheetHeader>
             <SheetTitle>{title}</SheetTitle>
