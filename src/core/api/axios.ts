@@ -17,7 +17,8 @@ type ProblemErrorItem = {
 };
 
 const api = axios.create({
-  baseURL: "https://api.fixybear.com/api",
+  //baseURL: "https://api.fixybear.com/api",
+   baseURL: "http://localhost:7290/api",
 });
 
 let isRefreshing = false;
