@@ -36,6 +36,7 @@ import {
 import api from "@/core/api/axios";
 import { GenericPagination } from "@/components/generic-pagination";
 import { MainServiceCard } from "@/features/main-services/components/mainservice-card";
+import MainServiceFilter from "@/components/main-service-filter";
 
 export function MainServicePage() {
   const navigate = useNavigate();
@@ -81,7 +82,9 @@ export function MainServicePage() {
       pageNumber: number,
       pageSize: number,
       searchText: string,
-      isAll: boolean
+      isAll: boolean,
+      startDate?: string,
+      endDate?: string,
     ) => {
       const params = new URLSearchParams();
 
@@ -89,6 +92,8 @@ export function MainServicePage() {
       params.append("pageIndex", pageNumber.toString());
       params.append("IsAllItems", isAll.toString());
       params.append("search", searchText);
+      if (startDate) params.append("startDate", startDate);
+      if (endDate) params.append("endDate", endDate);
 
       const response = await api.get<MainResponse<MainServiceModel>>(
         `/mainservice/list?${params.toString()}`
@@ -148,6 +153,13 @@ export function MainServicePage() {
 
   return (
     <div className="w-full rounded-md border">
+       <MainServiceFilter
+              onFilter={(values) => {
+                handlePageChange(0);
+                mainServiceByFilter(currentPage, pageSize, values.search ??  '',
+                   false, values.startDate ?? '', values.endDate ?? '')
+              }}
+            />
       <div className="hidden md:block rounded-md border mt-4">
         <h3 style={{ padding: "10px" }}>Servis Kartları</h3>
         <Table>
